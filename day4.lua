@@ -14,10 +14,10 @@ function valid(input,key)
     local chk = true
     for i,a in pairs(t) do
         for j,b in pairs(t) do
-            if i~=j and key==1 and key == 1 then
+            if i~=j and key==1 and a==b then
                 chk = false
                 break
-            elseif i~=j and key == 2 and match then
+            elseif i~=j and key == 2 and match(a,b) then
                 chk = false
                 break
             end
@@ -558,9 +558,9 @@ xzvfbf fopmfxu mvftgr mfupoxf coyhof talcc vpkslo]]
 local t = passwords(input)
 local tinval = {}
 local tval = {}
-part = 1
+part = 2
 for i,a in pairs(t) do
-    if valid(a,2) then
+    if valid(a,1) then
         table.insert(tval,a)
     else
         table.insert(tinval,a)
@@ -572,5 +572,20 @@ print("valids = " .. #tval)
 print("invalids = " .. #tinval)
 function match(str1,str2)
     if #str1~=#str2 then return false end
+    local words1 = {}
+    local words2 = {}
+    for i=1,#str1 do
+        table.insert(words1,string(str1,i,i))
+    end
+    for i=1,#str2 do
+        table.insert(words2,string(str2,i,i))
+    end
+    for i,m in pairs(words1) do
+        for j,n in pairs(words2) do
+            if i~=j and n==m then
+                table.remove(words1,i)
+                table.remove(words2,j)
+            end
+        end
+    end
 end
---incomplet
