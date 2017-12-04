@@ -25,9 +25,6 @@ function valid(input,key)
     end
     return chk
 end
-function match(str1,str2)
-    
-end
 function passwords(input)
     local spaces = string.find(input,string.char(10))
     local t={}
@@ -558,9 +555,9 @@ xzvfbf fopmfxu mvftgr mfupoxf coyhof talcc vpkslo]]
 local t = passwords(input)
 local tinval = {}
 local tval = {}
-part = 2
+part = 1
 for i,a in pairs(t) do
-    if valid(a,1) then
+    if valid(a,part) then
         table.insert(tval,a)
     else
         table.insert(tinval,a)
@@ -570,6 +567,7 @@ print("total = " .. #t)
 print("part " .. part)
 print("valids = " .. #tval)
 print("invalids = " .. #tinval)
+--part 2 incomplet.
 function match(str1,str2)
     if #str1~=#str2 then return false end
     local words1 = {}
