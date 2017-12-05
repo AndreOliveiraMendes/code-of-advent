@@ -1,3 +1,24 @@
+function amount(str,pstr)
+    local i,f=1,1
+    local count = 0
+    while string.find(str,pstr,i) do
+        count = count + 1
+        i,f=string.find(str,pstr,i)
+        i=f+1
+    end
+    return count
+end
+function match(str1,str2)
+    if #str1~=#str2 then return false end
+    local count = 0
+    for i=1,#str1 do
+        local str = string.sub(str1,i,i)
+        if string.find(str1,str) and string.find(str2,str) and amount(str1,str)==amount(str2,str) then
+            count = count + 1
+        end
+    end
+    return count == #str1
+end
 function valid(input,key)
     local spaces = string.find(input," ")
     local t = {}
@@ -14,10 +35,10 @@ function valid(input,key)
     local chk = true
     for i,a in pairs(t) do
         for j,b in pairs(t) do
-            if i~=j and key==1 and a==b then
+            if i ~= j and key == 1 and a == b then
                 chk = false
                 break
-            elseif i~=j and key == 2 and match(a,b) then
+            elseif i ~= j and key == 2 and match(a,b) then
                 chk = false
                 break
             end
@@ -555,35 +576,26 @@ xzvfbf fopmfxu mvftgr mfupoxf coyhof talcc vpkslo]]
 local t = passwords(input)
 local tinval = {}
 local tval = {}
-part = 1
 for i,a in pairs(t) do
-    if valid(a,part) then
+    if valid(a,1) then
         table.insert(tval,a)
     else
         table.insert(tinval,a)
     end
 end
 print("total = " .. #t)
-print("part " .. part)
+print("part " .. 1)
 print("valids = " .. #tval)
 print("invalids = " .. #tinval)
---part 2 incomplet.
-function match(str1,str2)
-    if #str1~=#str2 then return false end
-    local words1 = {}
-    local words2 = {}
-    for i=1,#str1 do
-        table.insert(words1,string(str1,i,i))
-    end
-    for i=1,#str2 do
-        table.insert(words2,string(str2,i,i))
-    end
-    for i,m in pairs(words1) do
-        for j,n in pairs(words2) do
-            if i~=j and n==m then
-                table.remove(words1,i)
-                table.remove(words2,j)
-            end
-        end
+tinval = {}
+tval = {}
+for i,a in pairs(t) do
+    if valid(a,2) then
+        table.insert(tval,a)
+    else
+        table.insert(tinval,a)
     end
 end
+print("part " .. 2)
+print("valids = " .. #tval)
+print("invalids = " .. #tinval)
