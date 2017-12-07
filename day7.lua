@@ -1110,9 +1110,9 @@ function weight(input)
     local ini = input:find("%(")
     local fin = input:find("%)")
     if ini then
-        return input:sub(ini+1,fin-1)
+        return tonumber(input:sub(ini+1,fin-1))
     else
-        return nil
+        return 0
     end
 end
 function linked(input)
@@ -1165,3 +1165,77 @@ for i,s in pairs(output) do
     end
 end
 print("root = " .. root)
+level = {}
+function insertinlevel(t1,name,lv,t2)
+    local index = checkname(t2,name)
+    if not t1[lv] then t1[lv] = {} end
+    table.insert(t1[lv],output[index])
+    if output[index].linked then
+        for i,s in pairs(output[index].linked) do
+            insertinlevel(t1,s,lv+1,t2)
+        end
+    end
+end
+insertinlevel(level,root,0,output)
+mlv = #level
+for i=0,mlv do
+    print(i,#level[i])
+end
+function gettotalweight(t1,s)
+    local value = s.weight
+    if s.linked then
+        for i,u in pairs(s.linked) do
+            local index = checkname(t1,u)
+            local v = t1[index]
+            local tvalue = gettotalweight(t1,v)
+            value = value + tvalue
+        end
+    end
+    return value
+end
+function checkstability(t1,s)
+    local value
+    if s.linked then
+        for i,u in pairs(s.linked) do
+            local index = checkname(t1,u)
+            local v = t1[index]
+            local tvalue = gettotalweight(t1,v)
+            if not value then
+                value = tvalue
+            elseif value ~= tvalue then
+                return false
+            end
+        end
+    end
+    return true,value
+end
+local tofix = {}
+for i=0,mlv do
+    print("level " .. i)
+    for j,s in pairs(level[i]) do
+        local chk = checkstability(output,s)
+        if not chk then
+            local value
+            if s.linked then
+                for i,u in pairs(s.linked) do
+                    local index = checkname(output,u)
+                    local v = output[index]
+                    local tvalue = gettotalweight(output,v)
+                    if not value then
+                        value = tvalue
+                    end
+                    tofix[i] = {}
+                    table.insert(tofix[i],{v.name,v.weight,tvalue,value})
+                end
+            end
+        end
+    end
+end
+print("list")
+for i=0,mlv do
+    if tofix[i] then
+        for j=1,#tofix[i] do
+            print(table.unpack(tofix[i][j]))
+        end
+    end
+end
