@@ -1,10 +1,5 @@
 input = {0,5,10,0,11,14,13,4,11,8,8,7,1,4,12,11}
 dt = {}
-function dp(v)
-    for i=0,v do
-    print(table.unpack(dt[i]))
-    end
-end
 meb = {}
 for i=1,#input do
     meb[i] = {}
@@ -12,6 +7,7 @@ for i=1,#input do
 end
 check = true
 round = 0
+first = 0
 function getmax(t,round)
     local maxvalue,index
     for i,s in pairs(t) do
@@ -61,9 +57,11 @@ while check do
         end
         chk = chk or compt(dt[i],t2)
         if chk then
+            first = i
             break
         end
     end
     check = not chk
 end
 print("cycles = " .. round)
+print("loop size = " .. round-first)
