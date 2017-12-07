@@ -1,5 +1,10 @@
 input = {0,5,10,0,11,14,13,4,11,8,8,7,1,4,12,11}
 dt = {}
+function dp(v)
+    for i=0,v do
+    print(table.unpack(dt[i]))
+    end
+end
 meb = {}
 for i=1,#input do
     meb[i] = {}
@@ -43,14 +48,18 @@ while check do
     end
     meb[mi][round] = 0
     for i = 1,mv do
-        index = (index + 1 == #input) and 1 or (index + 1)
+        index = (index + 1 > #input) and 1 or (index + 1)
         meb[index][round] = meb[index][round] + 1
     end
     local chk = false
     local t2 = gettable(meb,round)
+    if not dt[round] then dt[round] = t2 end
     for i = 0,round - 1 do
-        local t1 = gettable(meb,i)
-        chk = chk or compt(t1,t2)
+        if not dt[i] then
+            local t1 = gettable(meb,i)
+            dt[i] = t1
+        end
+        chk = chk or compt(dt[i],t2)
         if chk then
             break
         end
