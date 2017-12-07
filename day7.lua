@@ -1217,25 +1217,48 @@ for i=0,mlv do
         if not chk then
             local value
             if s.linked then
-                for i,u in pairs(s.linked) do
+                for k,u in pairs(s.linked) do
                     local index = checkname(output,u)
                     local v = output[index]
                     local tvalue = gettotalweight(output,v)
                     if not value then
                         value = tvalue
                     end
-                    tofix[i] = {}
-                    table.insert(tofix[i],{v.name,v.weight,tvalue,value})
+                    if not tofix[i] then tofix[i] = {} end
+                    table.insert(tofix[i],{v.name,v.weight,tvalue})
                 end
             end
         end
     end
 end
-print("list")
+print("list(" .. #tofix .. ")")
 for i=0,mlv do
     if tofix[i] then
+        print("<--------------------->")
+        local reft = {}
         for j=1,#tofix[i] do
-            print(table.unpack(tofix[i][j]))
+            local name,weight,value = table.unpack(tofix[i][j])
+            if not reft[value] then
+                reft[value]=1
+            else
+                reft[value]=reft[value]+1
+            end
+        end
+        for j=1,#tofix[i] do
+            local name,weight,value = table.unpack(tofix[i][j])
+            print("------------------")
+            print(name,weight,value)
+            if reft[value]==1 then
+                local fix
+                for i,s in pairs(reft) do
+                    if s>1 then
+                        fix = i
+                        break
+                    end
+                end
+                fix = fix - value
+                print(name,weight+fix,value+fix)
+            end
         end
     end
 end
