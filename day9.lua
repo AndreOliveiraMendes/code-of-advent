@@ -42,9 +42,15 @@ for i = 1, #str do
 end
 local output = {}
 local level = {}
-function add(output,type,...)
+function add(t,type,i,...)
     local arg = {...}
-    
+    if not t[i] then t[i]={} end
+    local t=t[i]
+    if #arg>0 then
+        add(t,type,arg)
+    else
+        t.type = type
+    end
 end
 local lock = false
 for i=1,#t do
