@@ -10,32 +10,22 @@ while ex do
     ex = string.find(input,"!")
 end
 print("int size:" .. #input)
-local str
-for i=1,#input do
-    local tstr =string.sub(input,i,i)
-    if tstr == "{" or tstr == "<" or tstr == ">" or tstr == "}" then
-        if not str then
-            str = tstr
-        else
-            str = str .. tstr
-        end
-    end
-end
-print("int size:" .. #str)
 t = {}
-for i = 1, #str do
-    local str = string.sub(str,i,i)
+for i = 1, #input do
+    local str = string.sub(input,i,i)
     local type
     if str == "{" or str == "}" then
         type = "group"
-    else
+    elseif str == "<" or str == ">" then
         type = "garbage"
     end
     local action
     if str == "{" or str == "<" then
         action = "open"
-    else
+    elseif str == "}" or str == ">" then
         action = "close"
+    else
+        action = "none"
     end
     table.insert(t,{type,action})
 end
@@ -58,13 +48,17 @@ for i=1,#t do
             lock = false
             local lstr = (type == "garbage") and ">" or "}"
             fstr = fstr .. lstr
+        else
+            fstr = fstr .. "|"
         end
+    elseif lock then
+        fstr = fstr .. "|"
     end
 end
 print("int size:" .. #fstr)
-print(fstr)
 local score = {}
 local scorev = 0
+local gscore = 0
 for i=1,#fstr do
     local str = string.sub(fstr,i,i)
     if str == "{" then
@@ -72,6 +66,8 @@ for i=1,#fstr do
         table.insert(score,scorev)
     elseif str == "}" then
         scorev = scorev - 1
+    elseif str == "|" then
+        gscore = gscore + 1
     end
 end
 local sum = 0
@@ -80,3 +76,5 @@ for i=1,#score do
 end
 print("part 1")
 print("total score:" .. sum)
+print("part 2")
+print("total score:" .. gscore)
