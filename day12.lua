@@ -2027,57 +2027,80 @@ for i,s in pairs(infos) do
 end
 local city = {}
 local max
-function tablecheck(v,t)
+function tchk(v,t)
     for i,s in pairs(t) do
         if s==v then return false end
     end
     return true
 end
-for i,s in pairs(t) do
-    local id = s[1]
-    if not city[id] then city[id] = {} end
-    if not city[id].cd then city[id].cd = {} end
-    if tablecheck(id,city[id].cd) then table.insert(city[id].cd,id) end
-    if not max or id>max then max=id end
-    for j=2,#s do
-        local j = s[j]
-        if not max or j>max then max=id end
-        if not city[j] then city[j] = {} end
-        if not city[j].cd then city[j].cd = {} end
-        if tablecheck(j,city[j].cd) then table.insert(city[j].cd,j) end
-        if tablecheck(j,city[id].cd) then table.insert(city[id].cd,j) end
-        if tablecheck(id,city[j].cd) then table.insert(city[j].cd,id) end
-        table.sort(city[j].cd)
-        table.sort(city[id].cd)
-    end
-    table.sort(city[id].cd)
+function tins(v,t)
+    if tchk(v,t) then table.insert(t,v) end
 end
-function check(val,id,t,t2)
-    if t2 then
-        for _,s in pairs(t2) do
-            if id == s then return false end
-        end
-    end
-    if val == id then
-        return true
-    else
-        table.insert(t2,id)
-        local con = t[id].cd
-        for i,s in pairs(con) do
-            if s ~=id then
-                if check(val,s,t,t2) then
-                    return true
-                end
+function icd(t,id)
+    if not t[id] then t[id] = {} end
+    if not t[id].cd then t[id].cd = {} end
+    return t[id].cd
+end
+function makecd(tr,tm,ac,rid,aid)
+    if not ac then
+        for i,s in pairs(tr) do
+            local id = s[1]
+            local ecd = icd(tm,id)
+            tins(id,ecd)
+            if not max or id>max then max=id end
+            local ac = {}
+            tins(id,ac)
+            for j=2,#s do
+                local aid = s[j]
+                makecd(tr,tm,ac,id,aid)
             end
         end
-        return false
+    else
+        if not tchk(aid,ac) then return end
+        local acd = icd(tm,aid)
+        local rcd = icd(tm,rid)
+        tins(aid,acd)
+        tins(aid,rcd)
+        tins(rid,acd)
+        tins(aid,ac)
+        local s = tr[aid+1]
+        for j=2,#s do
+            local aid = s[j]
+            makecd(tr,tm,ac,rid,aid)
+        end
     end
+end
+makecd(t,city)
+function check(val,id,t)
+    local con = t[id].cd
+    for i,s in pairs(con) do
+        if val == s then return true end
+    end
+    return false
 end
 count = 0
 for i=0,max do
-    if check(0,i,city,{}) then
+    if check(0,i,city) then
         count = count + 1
     end
 end
 print("part I")
 print("there are " .. count .. " city connected to 0")
+local groups = {}
+local jump = {}
+for i=0,max do
+    if tchk(i,jump) then
+        local t={}
+        for j=0,max do
+            if tchk(j,jump) then
+                if check(i,j,city) then
+                    tins(j,t)
+                    tins(j,jump)
+                end
+            end
+        end
+		table.insert(groups,t)
+    end
+end
+print("part II")
+print("there are " .. #groups .. " groups")
