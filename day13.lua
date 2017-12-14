@@ -41,7 +41,7 @@ local input ={[0]= 3;
 [84]= 14;
 [90]= 20;
 [92]= 14}
-local S = {}
+S = {}
 for i,s in pairs(input) do
     local t = {}
     t.x = i
@@ -50,39 +50,72 @@ for i,s in pairs(input) do
     t.dy = 1
     table.insert(S,t)
 end
-local p = {}
+p = {}
 p.y = 1
-start = true
-clist = {}
-while start or p.x<=92 do
-    start = false --no more start
-    if not t then t = 0 else t = t + 1 end -- increase timer
-    --player move
-    if not p.x then p.x = 0 else p.x = p.x + 1 end
-    --check colision
+function restart()
     for i,s in pairs(S) do
-        if s.x == p.x and s.y == p.y then
-            table.insert(clist,{s.x,s.my})
-            break
+        s.y = 1
+        s.dy = 1
+    end
+    p.x = nil
+end
+function game(delay,mode)
+    if not delay then delay = 0 end
+    start = true
+    clist = {}
+    severity = 0
+    while start or p.x<=92 do
+        if not t then t = 0 else t = t + 1 end -- increase timer
+        if t>=delay then
+            start = false --no more start
+            --player move
+            if not p.x then p.x = 0 else p.x = p.x + 1 end
+            --check colision
+            for i,s in pairs(S) do
+                if s.x == p.x and s.y == p.y then
+                    table.insert(clist,{s.x,s.my})
+                    break
+                end
+            end
+            if mode and #clist>0 then return 1 end
+        end
+        --S moves
+        for i,s in pairs(S) do
+            local py = s.y
+            local cy = s.y + s.dy
+            if cy>s.my then
+                s.dy = -1
+                cy = s.y + s.dy
+            elseif cy<1 then
+                s.dy = 1
+                cy = s.y + s.dy
+            end
+            s.y = cy
         end
     end
-    --S moves
-    for i,s in pairs(S) do
-        local py = s.y
-        local cy = s.y + s.dy
-        if cy>s.my then
-            s.dy = -1
-            cy = s.y + s.dy
-        elseif cy<1 then
-            s.dy = 1
-            cy = s.y + s.dy
-        end
-        s.y = cy
+    for i,s in pairs(clist) do
+        severity = severity + s[1]*s[2]
     end
+    return severity
+end
+function checkdelay(delay)
+    for i,s in pairs(input) do
+        local st = 2*(s-1)
+        if (delay+i)%st == 0 then
+            return false
+        end
+    end
+    return true
 end
 print("part I")
-severity = 0
-for i,s in pairs(clist) do
-    severity = severity + s[1]*s[2]
+print("severity value is " .. game())
+print("part II")
+delay = 0
+while true do
+    if checkdelay(delay) then
+        break
+    else
+        delay = delay + 1
+    end
 end
-print("severity value is " .. severity)
+print("the delay necessary to do the task is " .. delay .. " ps")
