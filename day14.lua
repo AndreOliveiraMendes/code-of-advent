@@ -108,3 +108,34 @@ for i=0,127 do
 end
 print("part I")
 print(count .. " squares are used")
+out = {}
+region = 1
+function toto(ti,to,x,y,reg)
+	if x<0 or y<0 or x>127 or y>127 then return false end
+	if not to[x] then
+		to[x] = {}
+	end
+	if to[x][y] then return false end
+	if ti[x][y] == "#" then
+		to[x][y] = reg
+		toto(ti,to,x-1,y,reg)
+		toto(ti,to,x+1,y,reg)
+		toto(ti,to,x,y-1,reg)
+		toto(ti,to,x,y+1,reg)
+		return true
+	else
+		to[x][y] = 0
+	end
+	return false
+end
+for i=0,127 do
+	for j=0,127 do
+		local chk = toto(output,out,i,j,region)
+		if chk then
+			nreg = region
+			region = region + 1
+		end
+	end
+end
+print("part II")
+print("there was " .. nreg .. " regions")
