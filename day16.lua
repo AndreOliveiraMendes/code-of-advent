@@ -2,67 +2,105 @@ input = "x5/11,pj/i,x0/4,pa/f,x9/14,pk/h,x11/1,s13,x15/14,pa/o,x2/9,s4,x1/7,s5,x
 group = {[0]="a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p"}
 function f1(t,input,i,j)
 	local str = string.sub(input,i,j)
-    local a = string.sub(str,1,1)
+	local a = string.sub(str,1,1)
 	local i = string.find(str,"/")
 	local v1,v2
 	if i then
-	    v1 = string.sub(str,2,i-1)
-	    v2 = string.sub(str,i+1,#str)
-	    if a == "x" then
-	        v1, v2 = tonumber(v1), tonumber(v2)
-	    end
+		v1 = string.sub(str,2,i-1)
+		v2 = string.sub(str,i+1,#str)
+		if a == "x" then
+			v1, v2 = tonumber(v1), tonumber(v2)
+		end
 	else
-	    v1 = tonumber(string.sub(str,2,#str))
+		v1 = tonumber(string.sub(str,2,#str))
 	end
 	table.insert(t,{a,v1,v2})
 end
 function f2(g,act,v1,v2)
-    if act == "s" then
-        local g2 = {}
-        for i = 0, 15 do
-            g2[(i+v1)%16] = g[i]
-        end
-        for i = 0, 15 do
-            g[i] = g2[i]
-        end
-    elseif act == "x" then
-        g[v1], g[v2] = g[v2], g[v1]
-    else
-        local i1,i2
-        for i=0, 15 do
-            if g[i] == v1 then
-                i1 = i
-                break
-            end
-        end
-        for i=0, 15 do
-            if g[i] == v2 then
-                i2 = i
-                break
-            end
-        end
-        g[i1], g[i2] = g[i2], g[i1]
-    end
+	if act == "s" then
+		local g2 = {}
+		for i = 0, 15 do
+			g2[(i+v1)%16] = g[i]
+		end
+		for i = 0, 15 do
+			g[i] = g2[i]
+		end
+	elseif act == "x" then
+		g[v1], g[v2] = g[v2], g[v1]
+	else
+		local i1,i2
+		for i=0, 15 do
+			if g[i] == v1 then
+				i1 = i
+				break
+			end
+		end
+		for i=0, 15 do
+			if g[i] == v2 then
+				i2 = i
+				break
+			end
+		end
+		g[i1], g[i2] = g[i2], g[i1]
+	end
 end
 function trans(input)
-    local t = {}
-    local i = 1
-    local j = string.find(input,",",i)
-    while j do
+	local t = {}
+	local i = 1
+	local j = string.find(input,",",i)
+	while j do
 		f1(t,input,i,j-1)
-        i = j+1
-        j = string.find(input,",",i)
-    end
+		i = j+1
+		j = string.find(input,",",i)
+	end
 	f1(t,input,i,#input)
 	return t
+end
+pout = ""
+for i = 0, 15 do
+	pout = pout .. group[i]
 end
 inp = trans(input)
 for i,s in pairs(inp) do
 	f2(group,s[1],s[2],s[3])
 end
+print(pout)
 print("part I")
 out = ""
 for i = 0, 15 do
-    out = out .. group[i]
+	out = out .. group[i]
 end
 print(out)
+local mov = {}
+for i = 1, 16 do
+	local str = string.sub(pout,i,i)
+	mov[i-1] = string.find(out,str)-1
+end
+group = {[0]="a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p"}
+function f3(g,mov)
+	local g2 = {}
+	for i = 0, 15 do
+		g2[i] = g[mov[i]]
+	end
+	for i = 0, 15 do
+		g[i] = g2[i]
+	end
+end
+out = nil
+p, i = 0, 0
+pto = {}
+pto[0] = aout
+while not out or (out ~= aout) do
+	f3(group,mov)
+	local str = ""
+	for i = 0, 15 do
+		str = str .. group[i]
+	end
+	out = str
+	i = i + 1
+	pto[i] = out
+end
+p = i - 1
+print("part II")
+s = 1000000000%p
+print(pto[s])
