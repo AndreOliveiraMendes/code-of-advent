@@ -44,6 +44,13 @@ function f2(g,act,v1,v2)
 		g[i1], g[i2] = g[i2], g[i1]
 	end
 end
+function concat(g)
+	local str = ""
+	for i=0,15 do
+		str = str .. g[i]
+	end
+	return str
+end
 function trans(input)
 	local t = {}
 	local i = 1
@@ -56,51 +63,29 @@ function trans(input)
 	f1(t,input,i,#input)
 	return t
 end
-pout = ""
-for i = 0, 15 do
-	pout = pout .. group[i]
-end
+pout = concat(group)
 inp = trans(input)
 for i,s in pairs(inp) do
 	f2(group,s[1],s[2],s[3])
 end
 print(pout)
 print("part I")
-out = ""
-for i = 0, 15 do
-	out = out .. group[i]
-end
+out = concat(group)
 print(out)
-local mov = {}
-for i = 1, 16 do
-	local str = string.sub(pout,i,i)
-	mov[i-1] = string.find(out,str)-1
-end
 group = {[0]="a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p"}
-function f3(g,mov)
-	local g2 = {}
-	for i = 0, 15 do
-		g2[i] = g[mov[i]]
-	end
-	for i = 0, 15 do
-		g[i] = g2[i]
-	end
-end
 out = nil
 p, i = 0, 0
 pto = {}
-pto[0] = aout
-while not out or (out ~= aout) do
-	f3(group,mov)
-	local str = ""
-	for i = 0, 15 do
-		str = str .. group[i]
+pto[0] = pout
+while not out or (out ~= pout) do
+	for i,s in pairs(inp) do
+		f2(group,s[1],s[2],s[3])
 	end
-	out = str
+	out = concat(group)
 	i = i + 1
 	pto[i] = out
 end
-p = i - 1
+p = i
 print("part II")
 s = 1000000000%p
 print(pto[s])
