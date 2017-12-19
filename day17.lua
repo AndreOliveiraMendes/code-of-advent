@@ -2,7 +2,7 @@ array = {}
 array[0] = 0
 curpos = 0
 step = 394
-for i = 1, 2017 do
+for i = 1, 50000000 do
     curpos = (curpos + step)%(#array+1)
     if curpos < #array then
         for j = #array, curpos + 1,-1 do
@@ -11,20 +11,21 @@ for i = 1, 2017 do
     end
     array[curpos + 1] = i
     curpos = curpos + 1
-end
-for i,s in pairs(array) do
-    if s == 2017 then
-        print(array[i+1])
-        break
-    end
-end
-for i = 1, 2017 do
-    curpos = (curpos + step)%(#array+1)
-    if curpos < #array then
-        for j = #array, curpos + 1,-1 do
-            array[j + 1] = array[j]
+    if i == 2017 then
+        for i,s in pairs(array) do
+            if s == 2017 then
+                print("part I")
+                print(array[i+1])
+                break
+            end
+        end
+    elseif i == 50000000 then
+        for i,s in pairs(array) do
+            if s == 0 then
+                print("part II")
+                print(array[i+1])
+                break
+            end
         end
     end
-    array[curpos + 1] = i
-    curpos = curpos + 1
 end
