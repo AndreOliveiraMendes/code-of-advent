@@ -148,6 +148,7 @@ function rcvn(v, vlist, slist)
     else
         vlist[v] = slist[1]
         table.remove(slist,1)
+        return true
     end
 end
 for i, s in pairs(input) do
@@ -155,3 +156,43 @@ for i, s in pairs(input) do
         input[i][1] = rcvn
     end
 end
+rcv = rcvn
+i = {[0] = 1, [1] = 1}
+varlist = {[0] = {}, [1] = {}}
+sound = {[0] = {}, [1] = {}}
+lock = {}
+id = 0
+count = {[0] = 0, [1] = 0}
+while (i[0] > 0 and i[0] <= #input) or (i[1] >= 1 and i[1] <= #input) do
+    if (i[id] >= 1 and i[id] <= #input) then
+        local f, v1, v2 = table.unpack(input[i[id]])
+        if v1 then init(varlist[id], v1, id) end
+        if v2 then init(varlist[id], v2, id) end
+        if isfunc(f,set,add,mul,mod) then
+            f(v1, v2, varlist[id])
+            i[id] = i[id] + 1
+        elseif isfunc(f,snd) then
+            f(v1, varlist[id], sound[id])
+            i[id] = i[id] + 1
+            count[id] = count[id] + 1
+            id = 1 - id
+        elseif isfunc(f,rcv) then
+            local rec = f(v1,varlist[id],sound[1-id])
+            if rec then
+                i[id] = i[id] + 1
+                if lock[id] then lock[id] = false end
+            else
+                if lock[0] and lock[1] then break end
+                lock[id] = true
+                id = 1 - id
+            end
+        else
+            i[id] = jgz(v1,v2,varlist[id],i[id])
+        end
+    else
+        dl[id] = true
+        id = 1 - id
+    end
+end
+print("part II:")
+print(count[0],count[1])
