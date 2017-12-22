@@ -227,19 +227,19 @@ map = getmap(input)
 direction = "down"
 collection = {}
 function collect(pos, con, linecont)
-    local str = string.sub(linecont, pos, pos)
-    local col = string.match(str, "%a")
-    if col then
-        table.insert(con,col)
-    end
+	local str = string.sub(linecont, pos, pos)
+	local col = string.match(str, "%a")
+	if col then
+		table.insert(con,col)
+	end
 end
 function rotate(line, pos, dir, precont, cont, poscont)
-    local str = string.sub(cont, pos, pos)
-    if not (str == "+") then return dir end
-    local adir = {}
-    if precont and not (dir == "down") then table.insert(adir,"up") end
-    if cont then
-        if pos > 1 and not (dir == "right") then table.insert(adir,"left") end
+	local str = string.sub(cont, pos, pos)
+	if not (str == "+") then return dir end
+	local adir = {}
+	if precont and not (dir == "down") then table.insert(adir,"up") end
+	if cont then
+		if pos > 1 and not (dir == "right") then table.insert(adir,"left") end
 		if pos < #cont and not (dir == "left") then table.insert(adir,"right") end
 	end
 	if poscont and not (dir == "up") then table.insert(adir,"down") end
@@ -263,7 +263,7 @@ function rotate(line, pos, dir, precont, cont, poscont)
 			local cstr = string.sub(cont, pos + 1, pos + 1)
 			if string.match(cstr, "%a") or string.match(cstr, "%d") or (cstr == "-") or (cstr == "|") or (cstr == "+") then
 				return "right"
-			end			
+			end
 		end
 	end
 	return dir
@@ -294,28 +294,28 @@ function move(line, pos, dir, precont, cont, poscont)
 end
 i = 0
 while (line >= 1 and line <= #map) and (pos >= 1 and pos <= #map[line]) do
-    --get the content of line, also previous and pos (if any)
-    local precont, cont, poscont
-    if line > 1 then
-        precont = map[line - 1]
-    end
-    cont = map[line]
-    if line < #map then
-        poscont = map[line + 1]
-    end
-    --collect
-    collect(pos, collection, cont)
-    --rotate
-    direction = rotate(line, pos, direction, precont, cont, poscont)
-    --advance
-    line, pos, stop = move(line, pos, direction, precont, cont, poscont)
-	i = i + 1
-    if stop then break end
+	--get the content of line, also previous and pos (if any)
+	local precont, cont, poscont
+	if line > 1 then
+		precont = map[line - 1]
+	end
+	cont = map[line]
+	if line < #map then
+		poscont = map[line + 1]
+	end
+	--collect
+	collect(pos, collection, cont)
+	--rotate
+	direction = rotate(line, pos, direction, precont, cont, poscont)
+	--advance
+	line, pos, stop = move(line, pos, direction, precont, cont, poscont)
+	i = i + 1 -- counting end only (i = 0) == counting start only (i = 1) [1 - 1]
+	if stop then break end
 end
 str = ""
 for i, s in pairs(collection) do
-    str = str .. s
-    print(i, s)
+	str = str .. s
+	print(i, s)
 end
 print("leters:",str)
 print("it was " .. i .. " steps")
