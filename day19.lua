@@ -312,7 +312,10 @@ while (line >= 1 and line <= #map) and (pos >= 1 and pos <= #map[line]) do
 	i = i + 1
     if stop then break end
 end
-print("leters:",table.unpack(collection))
+str = ""
 for i, s in pairs(collection) do
+    str = str .. s
     print(i, s)
 end
+print("leters:",str)
+print("it was " .. i .. " steps")
