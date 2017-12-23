@@ -1023,21 +1023,27 @@ for i, s in pairs(info) do
         table.insert(t, digit)
     end
     local par = {}
-    par.x, par.y, par.z = t[1], t[2], t[3]
-    par.vx, par.vy, par.vz = t[4], t[5], t[6]
-    par.ax, par.ay, par.az = t[7], t[8], t[9]
+    par.pos = {x = t[1], y = t[2], z = t[3]}
+    par.vel = {x = t[4], y = t[5], z = t[6]}
+    par.acel = {x = t[7], y = t[8], z = t[9]}
     particle[p] = par
     p = p + 1
 end
+function vecadd(v1, v2)
+    return {x = v1.x + v2.x, y = v1.y + v2.y, z = v1.z + v2.z}
+end
 function manhatam(p)
-    return math.abs(p.x)+math.abs(p.y)+math.abs(p.z)
+    local v = p.pos
+    return math.abs(v.x) + math.abs(v.y) + math.abs(v.z)
 end
 function update(p)
-    p.vx, p.vy, p.vz = p.vx + p.ax, p.vy + p.ay, p.vz + p.az
-    p.x, p.y, p.z = p.x + p.vx, p.y + p.vy, p.z + p.vz
+    p.vel = vecadd(p.vel, p.acel)
+    p.pos = vecadd(p.pos, p.vel)
 end
+--part I
 t = 0
 count = 0
+countmax = 300
 while true do
     local min, ind
     for i, s in pairs(particle) do
@@ -1058,8 +1064,9 @@ while true do
         count = 0
     end
     t = t + 1
-    if count > 300 then break end
+    if count > countmax then break end
 end
+print("part I")
 print("particle " .. gind .. " after " .. t)
 --[[
     r(t) = r(0) + t(0) + t(t+1)a(0)/2
