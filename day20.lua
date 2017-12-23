@@ -1019,8 +1019,8 @@ particle = {}
 p = 0
 for i, s in pairs(info) do
     local t = {}
-    for digit in string.gmatch(s, "%d+") do
-        table.insert(t, digit)
+    for digit in string.gmatch(s, "-?%d+") do
+        table.insert(t, tonumber(digit))
     end
     local par = {}
     par.pos = {x = t[1], y = t[2], z = t[3]}
@@ -1073,3 +1073,57 @@ print("particle " .. gind .. " after " .. t)
     v(t) = v(0) + ta(0)
     a(t) = a(0)
 --]]
+--part II
+particle = {}
+p = 0
+for i, s in pairs(info) do
+    local t = {}
+    for digit in string.gmatch(s, "-?%d+") do
+        table.insert(t, tonumber(digit))
+    end
+    local par = {}
+    par.pos = {x = t[1], y = t[2], z = t[3]}
+    par.vel = {x = t[4], y = t[5], z = t[6]}
+    par.acel = {x = t[7], y = t[8], z = t[9]}
+    particle[p] = par
+    p = p + 1
+end
+function veceq(v1, v2)
+    return (v1.x == v2.x) and (v1.y == v2.y) and (v1.z == v2.z)
+end
+function vecsub(v1, v2)
+    return {x = v1.x - v2.x, y = v1.y - v2.y, z = v1.z - v2.z}
+end
+function count(t)
+    local count = 0
+    for i, s in pairs(t) do
+        count = count + 1
+    end
+    return count
+end
+t = 0
+tmax = 2000
+print("part 2")
+while true do
+    for i, u in pairs(particle) do
+        for j, v in pairs(particle) do
+            if i > j then
+                if veceq(u.pos,v.pos) then
+                    u.destroy = true
+                    v.destroy = true
+                end
+            end
+        end
+    end
+    for i = #particle,0,-1 do
+        local s = particle[i]
+        if s.destroy then
+            table.remove(particle,i)
+        end
+    end
+    for i, s in pairs(particle) do
+        update(s)
+    end
+    t = t + 1
+    if t > tmax then break end
+end
