@@ -1016,17 +1016,53 @@ function getinfo(input)
 end
 info = getinfo(input)
 particle = {}
+particle2 = {}
 p = 0
 for i, s in pairs(info) do
     local t = {}
     for digit in string.gmatch(s, "-?%d+") do
         table.insert(t, tonumber(digit))
     end
-    local par = {}
-    par.pos = {x = t[1], y = t[2], z = t[3]}
-    par.vel = {x = t[4], y = t[5], z = t[6]}
-    par.acel = {x = t[7], y = t[8], z = t[9]}
-    particle[p] = par
+    local par1 = {}
+    local par2 = {}
+    par1.pos = {x = t[1], y = t[2], z = t[3]}
+    par2.pos = {x = t[1], y = t[2], z = t[3]}
+    par1.vel = {x = t[4], y = t[5], z = t[6]}
+    par2.vel = {x = t[4], y = t[5], z = t[6]}
+    par1.acel = {x = t[7], y = t[8], z = t[9]}
+    par2.acel = {x = t[7], y = t[8], z = t[9]}
+    particle[p] = par1
+    function xt(n)
+        return t[1] + n*t[4] + n*(n+1)*t[7]/2
+    end
+    function yt(n)
+        return t[2] + n*t[5] + n*(n+1)*t[8]/2
+    end
+    function zt(n)
+        return t[3] + n*t[6] + n*(n+1)*t[9]/2
+    end
+    function dxt(n)
+        return t[4] + n*t[7]
+    end
+    function dyt(n)
+        return t[5] + n*t[8]
+    end
+    function dzt(n)
+        return t[6] + n*t[9]
+    end
+    function ddxt(n)
+        return t[7]
+    end
+    function ddyt(n)
+        return t[8]
+    end
+    function ddzt(n)
+        return t[9]
+    end
+    par2.posf = {x = xt, y = yt, z = zt}
+    par2.velf = {x = dxt, y = dyt, z = dzt}
+    par2.acelf = {x = ddxt, y = ddyt, z = ddzt}
+    particle2[p] = par2
     p = p + 1
 end
 function vecadd(v1, v2)
@@ -1069,25 +1105,11 @@ end
 print("part I")
 print("particle " .. gind .. " after " .. t)
 --[[
-    r(t) = r(0) + t(0) + t(t+1)a(0)/2
+    r(t) = r(0) + tv(0) + t(t+1)a(0)/2
     v(t) = v(0) + ta(0)
     a(t) = a(0)
 --]]
 --part II
-particle = {}
-p = 0
-for i, s in pairs(info) do
-    local t = {}
-    for digit in string.gmatch(s, "-?%d+") do
-        table.insert(t, tonumber(digit))
-    end
-    local par = {}
-    par.pos = {x = t[1], y = t[2], z = t[3]}
-    par.vel = {x = t[4], y = t[5], z = t[6]}
-    par.acel = {x = t[7], y = t[8], z = t[9]}
-    particle[p] = par
-    p = p + 1
-end
 function veceq(v1, v2)
     return (v1.x == v2.x) and (v1.y == v2.y) and (v1.z == v2.z)
 end
@@ -1101,29 +1123,87 @@ function count(t)
     end
     return count
 end
-t = 0
-tmax = 2000
+function isint(n)
+    return math.floor(n) == n
+end
+--658
+function estimate(u, var, sol)
+    local a = u.acel[var]
+    local b = u.acel[var] + 2*u.vel[var]
+    local c = 2*u.pos[var]
+    if sol then
+        return (a*sol^2+sol*b+c) == 0
+    else
+        if a ~= 0 then
+            local delta = b^2-4*a*c
+            if delta < 0 then
+                return nil
+            elseif delta == 0 then
+                return -b/(2*a)
+            else
+                return (-b - math.sqrt(delta))/(2*a), (-b + math.sqrt(delta))/(2*a)
+            end
+        elseif b ~= 0 then
+            return -c/b
+        else
+            return c
+        end
+    end
+end
+function tins(t,value)
+    for i, s in pairs(t) do
+        if s == value then
+            return
+        end
+    end
+    table.insert(t,value)
+end
 print("part 2")
-while true do
-    for i, u in pairs(particle) do
-        for j, v in pairs(particle) do
+colisionlist = {}
+function poi(w,v1,v2,v3)
+    local t1, t2 = estimate(w, v1)
+    if t1 and (t1 >= 0) and isint(t1) then
+        if estimate(w, v2, t1) and estimate(w, v3, t1) then
+            tins(colisionlist,t1)
+        end
+    end
+    if t2 and (t2 >= 0) and isint(t2) then
+        if estimate(w, v2, t2) and estimate(w, v3, t2) then
+            tins(colisionlist,t2)
+        end
+    end
+end
+for i, u in pairs(particle2) do
+    for j, v in pairs(particle2) do
+        if i < j then
+            local w = {}
+            w.pos = vecsub(u.pos, v.pos)
+            w.vel = vecsub(u.vel, v.vel)
+            w.acel = vecsub(u.acel, v.acel)
+            poi(w,"x","y","z")
+        end
+    end
+end
+table.sort(colisionlist)
+print("captured " .. #colisionlist .. " colisions time")
+for i, t in pairs(colisionlist) do
+    print(i, t, count(particle2))
+    for i, u in pairs(particle2) do
+        local pos1 = {x = u.posf.x(t), y = u.posf.y(t), z = u.posf.z(t)}
+        for j, v in pairs(particle2) do
             if i > j then
-                if veceq(u.pos,v.pos) then
+                local pos2 = {x = v.posf.x(t), y = v.posf.y(t), z = v.posf.z(t)}
+                if veceq(pos1,pos2) then
                     u.destroy = true
                     v.destroy = true
                 end
             end
         end
     end
-    for i = #particle,0,-1 do
-        local s = particle[i]
+    for i, s in pairs(particle2) do
         if s.destroy then
-            table.remove(particle,i)
+            table.remove(particle2,i)
         end
     end
-    for i, s in pairs(particle) do
-        update(s)
-    end
-    t = t + 1
-    if t > tmax then break end
 end
+print("there still:" .. count(particle2) .. " particles")
