@@ -90,7 +90,6 @@ end
 --part I
 i = 1
 varlist = {a = 0, b = 0, c = 0, d = 0, e = 0, f = 0, g = 0, h = 0}
-sound = {}
 countmul = 0
 while i >= 1 and i <= #input do
     local f, v1, v2 = table.unpack(input[i])
