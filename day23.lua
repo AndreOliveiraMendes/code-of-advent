@@ -80,10 +80,6 @@ input = {{set, "b", 65},
 {jnz, 1, 3},
 {sub, "b", -17},
 {jnz, 1, -23}}
-function init(t, v, id)
-    if type(v) == "number" then return end
-    if not t[v] then t[v] = id end
-end
 function isfunc(f, ...)
     local arg = {...}
     for i, fs in pairs(arg) do
@@ -93,13 +89,11 @@ function isfunc(f, ...)
 end
 --part I
 i = 1
-varlist = {}
+varlist = {a = 0, b = 0, c = 0, d = 0, e = 0, f = 0, g = 0, h = 0}
 sound = {}
 countmul = 0
 while i >= 1 and i <= #input do
     local f, v1, v2 = table.unpack(input[i])
-    if v1 then init(varlist, v1, 0) end
-    if v2 then init(varlist, v2, 0) end
     if isfunc(f,set,sub,mul) then
         if isfunc(f,mul) then
             countmul = countmul + 1
