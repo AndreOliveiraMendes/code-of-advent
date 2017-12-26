@@ -64,15 +64,9 @@ function print2(obj, aux)
             end
             print(str)
         elseif obj.type == "bridge" then
-            local str
-            for i, s in pairs(obj) do
-                if s ~= "bridge" then
-                    if not str then
-                        str = print2(s, true)
-                    else
-                        str = str .. "-" .. print2(s, true)
-                    end
-                end
+            local str = "|"
+            for i, s in ipairs(obj) do
+                str = str .. "-" .. print2(s, true)
             end
             print(str)
         else
@@ -110,15 +104,142 @@ for i, s in pairs(input) do
     t.type = "piece"
     table.insert(pieces, t)
 end
-function makebridge(a, b)
+function makebridge(a, b) --if neither a or b is give, if make a 0 bridge
     local t = {}
     t.type = "bridge"
-    if not a or (type(a) ~= "table") or (a.type ~= "piece") then
-        print("error: expected a piece")
+    if a and (type(a) == "table") and (a.type == "piece") then
+        table.insert(t, a)
     end
-    table.insert(t, a)
     if b and (type(b) == "table") and (b.type == "piece") then
         table.insert(t, b)
     end
     return t
 end
+function getbridgesize(a)
+    if not a or (type(a) ~= "table") or (a.type ~= "bridge") then
+        print("error: expecteda a bridge")
+        return
+    end
+    local count = 0
+    for i, s in ipairs(a) do
+        count = count + 1
+    end
+    return count
+end
+function bridgeinsert(a, b)
+    if not a or (type(a) ~= "table") or (a.type ~= "bridge") then
+        print("error: expecteda a bridge")
+        return
+    end
+    if not b or (type(b) ~= "table") or (b.type ~= "piece") then
+        print("error: expected a piece")
+        return
+    end
+    for i, s in ipairs(a) do
+        if s == b then
+            --print("it alredy there")
+            return
+        end
+    end
+    table.insert(a, b)
+end
+function bridgeremove(a, b)
+    if not a or (type(a) ~= "table") or (a.type ~= "bridge") then
+        print("error: expecteda a bridge")
+        return
+    end
+    if not b or (type(b) ~= "table") or (b.type ~= "piece") then
+        print("error: expected a piece")
+        return
+    end
+    for i, s in ipairs(a) do
+        if s == b then
+            a[i] = nil
+        end
+    end
+end
+function getbridgecomponent(a, n) --if n is nil, get last component
+    if not a or (type(a) ~= "table") or (a.type ~= "bridge") then
+        print("error: expecteda a bridge")
+        return
+    end
+    if not n then n = getbridgesize(a) end
+    local count = 0
+    for i, s in ipairs(a) do
+        count = count + 1
+        if count == n then
+            return s
+        end
+    end
+    return
+end
+function getbridgestrengh(a)
+    if not a or (type(a) ~= "table") or (a.type ~= "bridge") then
+        print("error: expecteda a bridge")
+        return
+    end
+    local sum = 0
+    for i, s in ipairs(a) do
+        sum = sum + s.p1 + s.p2
+    end
+    return sum
+end
+function pieceinvert(a)
+    if not a or (type(a) ~= "table") or (a.type ~= "piece") then
+        print("error: expected a piece")
+        return
+    end
+    a.p1, a.p2 = a.p2, a.p1
+end
+availabre = {}
+for i, s in ipairs(pieces) do
+    table.insert(availabre, s)
+end
+function getstrongestbridge(availabre, bridge)
+    local max
+    if getbridgesize(bridge) == 0 then
+        for i, s in ipairs(availabre) do
+            if (s.p1 == 0) or (s.p2 == 0) then
+                if not (s.p1 == 0) then pieceinvert(s) end
+                local availabre2 = {}
+                for i, s2 in ipairs(availabre) do
+                    if s2 ~= s then
+                        table.insert(availabre2, s2)
+                    end
+                end
+                bridgeinsert(bridge, s)
+                local str = getbridgestrengh(bridge)
+                if not max or getbridgestrengh(bridge) > max then max = str end
+                str = getstrongestbridge(availabre2, bridge)
+                if not max or (str and (str > max)) then max = str end
+                bridgeremove(bridge, s)
+            end
+        end
+    else
+        local lpiece = getbridgecomponent(bridge)
+        for i, s in ipairs(availabre) do
+            if (s.p1 == lpiece.p2) or (s.p2 == lpiece.p2) then
+                if not (s.p1 == lpiece.p2) then pieceinvert(s) end
+                local availabre2 = {}
+                for i, s2 in ipairs(availabre) do
+                    if s2 ~= s then
+                        table.insert(availabre2, s2)
+                    end
+                end
+                bridgeinsert(bridge, s)
+                local str = getbridgestrengh(bridge)
+                if not max or getbridgestrengh(bridge) > max then max = str end
+                str = getstrongestbridge(availabre2, bridge)
+                if not max or (str and (str > max)) then max = str end
+                bridgeremove(bridge, s)
+            end
+        end        
+    end
+    return max
+end
+--part I
+print("part I")
+ti = os.time()
+max = getstrongestbridge(availabre, makebridge())
+print("done in " .. os.time() - ti)
+print("the strongestbridge possible is " .. max)
