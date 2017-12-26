@@ -184,6 +184,18 @@ function getbridgestrengh(a)
     end
     return sum
 end
+function getbridgecopy(a)
+    if not a or (type(a) ~= "table") or (a.type ~= "bridge") then
+        print("error: expecteda a bridge")
+        return
+    end
+    local t = {}
+    t.type = "bridge"
+    for i, s in ipairs(a) do
+        table.insert(t, s)
+    end
+    return t
+end
 function pieceinvert(a)
     if not a or (type(a) ~= "table") or (a.type ~= "piece") then
         print("error: expected a piece")
@@ -192,12 +204,22 @@ function pieceinvert(a)
     a.p1, a.p2 = a.p2, a.p1
 end
 availabre = {}
+msize = 0
+longbridge = {}
 for i, s in ipairs(pieces) do
     table.insert(availabre, s)
 end
 function getstrongestbridge(availabre, bridge)
     local max
-    if getbridgesize(bridge) == 0 then
+    local size = getbridgesize(bridge)
+    if not msize or (size > msize) then
+        msize = size
+        longbridge = {}
+        table.insert(longbridge, getbridgecopy(bridge))
+    elseif size == msize then
+        table.insert(longbridge, getbridgecopy(bridge))
+    end
+    if size == 0 then
         for i, s in ipairs(availabre) do
             if (s.p1 == 0) or (s.p2 == 0) then
                 if not (s.p1 == 0) then pieceinvert(s) end
@@ -208,11 +230,19 @@ function getstrongestbridge(availabre, bridge)
                     end
                 end
                 bridgeinsert(bridge, s)
+                size = size + 1
+                if not msize or (size > msize) then
+                    longbridge = {}
+                    table.insert(longbridge, getbridgecopy(bridge))
+                elseif size == msize then
+                    table.insert(longbridge, getbridgecopy(bridge))
+                end
                 local str = getbridgestrengh(bridge)
-                if not max or getbridgestrengh(bridge) > max then max = str end
+                if not max or str > max then max = str end
                 str = getstrongestbridge(availabre2, bridge)
                 if not max or (str and (str > max)) then max = str end
                 bridgeremove(bridge, s)
+                size = size - 1
             end
         end
     else
@@ -227,11 +257,19 @@ function getstrongestbridge(availabre, bridge)
                     end
                 end
                 bridgeinsert(bridge, s)
+                size = size + 1
+                if not msize or (size > msize) then
+                    longbridge = {}
+                    table.insert(longbridge, getbridgecopy(bridge))
+                elseif size == msize then
+                    table.insert(longbridge, getbridgecopy(bridge))
+                end
                 local str = getbridgestrengh(bridge)
-                if not max or getbridgestrengh(bridge) > max then max = str end
+                if not max or str > max then max = str end
                 str = getstrongestbridge(availabre2, bridge)
                 if not max or (str and (str > max)) then max = str end
                 bridgeremove(bridge, s)
+                size = size - 1
             end
         end        
     end
@@ -242,4 +280,13 @@ print("part I")
 ti = os.time()
 max = getstrongestbridge(availabre, makebridge())
 print("done in " .. os.time() - ti)
-print("the strongestbridge possible is " .. max)
+print("the strongest bridge possible is " .. max)
+print("also the max size possible is " .. msize)
+--part II
+print("part II")
+max = 0
+for i, s in ipairs(longbridge) do
+    local str = getbridgestrengh(s)
+    if str > max then max = str end
+end
+print("the strongest bridge possible betwen the longest ones is " .. max)
