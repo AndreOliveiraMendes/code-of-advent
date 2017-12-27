@@ -107,3 +107,60 @@ while i >= 1 and i <= #input do
 end
 print("part I")
 print("mul was invoked " .. countmul .. " times")
+key = {}
+for i, s in pairs(varlist) do
+    table.insert(key, i)
+end
+table.sort(key)
+print("variables after interaction")
+for i, s in pairs(key) do
+    print(s, varlist[s])
+end
+--part II
+function isprime(n)
+    for i = 2, n - 1 do
+        if n % i == 0 then return false end
+    end
+    return true
+end
+function isp(v1, v2, list)
+    local com
+    if type(v2) == "number" then
+        com = v2
+    else
+        com = list[v2]
+    end
+    if not isprime(com) then
+        list[v1] = list[v1] + 1
+    end
+end
+input = {{jnz,"a",4},
+{set,"b",65},
+{set,"c",65},
+{jnz,1,3},
+{set,"b",106500},
+{set,"c",123500},
+{isp,"h","b"},
+{set,"g","b"},
+{sub,"g","c"},
+{jnz,"g",2},
+{jnz,1,3},
+{sub,"b",-17},
+{jnz,1,-6}}
+i = 1
+varlist = {a = 1, b = 0, c = 0, d = 0, e = 0, f = 0, g = 0, h = 0}
+while i >= 1 and i <= #input do
+    local f, v1, v2 = table.unpack(input[i])
+    if isfunc(f,set,sub,mul,isp) then
+        f(v1, v2, varlist)
+    end
+    if isfunc(f, jnz) then
+        i = f(v1,v2,varlist,i)
+    else
+        i = i + 1
+    end
+end
+print("variables after interaction")
+for i, s in pairs(key) do
+    print(s, varlist[s])
+end
