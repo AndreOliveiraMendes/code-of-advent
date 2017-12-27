@@ -1209,56 +1209,39 @@ function checkstability(t1,s)
     end
     return true,value
 end
-local tofix = {}
-for i=0,mlv do
-    print("level " .. i)
+for i=mlv, 0, -1 do
     for j,s in pairs(level[i]) do
         local chk = checkstability(output,s)
         if not chk then
-            local value
+            local vt = {}
             if s.linked then
                 for k,u in pairs(s.linked) do
                     local index = checkname(output,u)
                     local v = output[index]
                     local tvalue = gettotalweight(output,v)
-                    if not value then
-                        value = tvalue
-                    end
-                    if not tofix[i] then tofix[i] = {} end
-                    table.insert(tofix[i],{v.name,v.weight,tvalue})
+                    if not vt[tvalue] then vt[tvalue] = 1 else vt[tvalue] = vt[tvalue] + 1 end
                 end
+                local correct, wrong
+                for i, s in pairs(vt) do
+                    if s == 1 then
+                        wrong = i
+                    else
+                        correct = i
+                    end
+                end
+                fix = correct - wrong
+                for k,u in pairs(s.linked) do
+                    local index = checkname(output,u)
+                    local v = output[index]
+                    local tvalue = gettotalweight(output,v)
+                    if tvalue == wrong then
+                        print("the correct weight was " .. v.weight + fix)
+                        v.weight = v.weight + fix
+                        goto exit
+                    end
+                end                
             end
         end
     end
 end
-print("list(" .. #tofix .. ")")
-for i=0,mlv do
-    if tofix[i] then
-        print("<--------------------->")
-        local reft = {}
-        for j=1,#tofix[i] do
-            local name,weight,value = table.unpack(tofix[i][j])
-            if not reft[value] then
-                reft[value]=1
-            else
-                reft[value]=reft[value]+1
-            end
-        end
-        for j=1,#tofix[i] do
-            local name,weight,value = table.unpack(tofix[i][j])
-            print("------------------")
-            print(name,weight,value)
-            if reft[value]==1 then
-                local fix
-                for i,s in pairs(reft) do
-                    if s>1 then
-                        fix = i
-                        break
-                    end
-                end
-                fix = fix - value
-                print(name,weight+fix,value+fix)
-            end
-        end
-    end
-end
+::exit::
