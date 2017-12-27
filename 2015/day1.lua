@@ -7,6 +7,12 @@ for i = 1, #input do
    else
       floor = floor - 1
    end
+   if not basement then
+      if floor == -1 then
+         basement = i
+      end
+   end
 end
 --part I
 print("the input lead to floor " .. floor)
+print("entered basment first time at " .. basement)
