@@ -22,3 +22,46 @@ for i = 1, #input do
 end
 --part I
 print("there was " .. count .. " child that win any present")
+x, y, count = 0, 0, 1
+mcity = {[0] = {[0] = 1}}
+for i = 1, #input, 2 do
+    local str = string.sub(input, i, i)
+    if str == "^" then
+        x, y = x, y + 1
+    elseif str == ">" then
+        x, y = x + 1, y
+    elseif str == "<" then
+        x, y = x - 1, y
+    else
+        x, y = x, y - 1
+    end
+    if not mcity[x] then mcity[x] = {} end
+    if not mcity[x][y] then
+        mcity[x][y] = 1
+        count = count + 1
+    else
+        mcity[x][y] = mcity[x][y] + 1
+    end
+end
+x, y = 0, 0
+for i = 2, #input, 2 do
+    local str = string.sub(input, i, i)
+    if str == "^" then
+        x, y = x, y + 1
+    elseif str == ">" then
+        x, y = x + 1, y
+    elseif str == "<" then
+        x, y = x - 1, y
+    else
+        x, y = x, y - 1
+    end
+    if not mcity[x] then mcity[x] = {} end
+    if not mcity[x][y] then
+        mcity[x][y] = 1
+        count = count + 1
+    else
+        mcity[x][y] = mcity[x][y] + 1
+    end
+end
+--part II
+print("now there was " .. count .. " child that win any present")
