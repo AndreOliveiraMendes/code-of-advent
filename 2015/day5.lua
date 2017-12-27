@@ -1041,3 +1041,33 @@ for i, s in ipairs(words) do
 end
 --part I
 print("there are " .. count .. " nice word(s)")
+function checkpl(str)
+    for i = 1, #str - 1 do
+        local astr = string.sub(str, i, i + 1)
+        local i1, i2 = string.find(str, astr)
+        local i3, i4 = string.find(str, astr, i2 + 1)
+        if i1 and i3 then return true end
+    end
+    return false
+end
+function checkrepeated(str)
+    for i = 1, #str - 2 do
+        local astr = string.sub(str, i, i + 2)
+        local s1, s2 = string.sub(astr, 1, 1), string.sub(astr, 3, 3)
+        if s1 == s2 then return true end
+    end
+    return false
+end
+function valid2(str)
+    local rule1 = checkpl(str)
+    local rule2 = checkrepeated(str)
+    return rule1 and rule2
+end  
+count = 0
+for i, s in ipairs(words) do
+    if valid2(s) then
+        count = count + 1
+    end
+end
+--part II
+print("now there are " .. count .. " nice word(s)")
