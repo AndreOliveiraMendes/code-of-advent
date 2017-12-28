@@ -364,7 +364,9 @@ function exe(list, n, v1, v2, v3, v4)
             list[v2] = v1
         else
             if not list[v1] then return false end
-            list[v2] = list[v1]
+            if not list[v2] then
+                list[v2] = list[v1]
+            end
         end
         return true
     elseif n == 3 then
@@ -402,6 +404,44 @@ function exe(list, n, v1, v2, v3, v4)
         end
         return true
     end
+end
+i = 1
+repeat
+    local s, suc = inst[i]
+    if #s == 2 then
+        suc = exe(varlist,2,table.unpack(s))
+    elseif #s == 3 then
+        suc = exe(varlist,3,table.unpack(s))
+    elseif #s == 4 then
+        suc = exe(varlist,4,table.unpack(s))
+    else
+        print("error: unexpected data")
+    end
+    if suc then
+        table.remove(inst, i)
+        i = 1
+    else
+        i = i + 1
+    end
+until (#inst == 0)
+print("after interaction, the signal on wire a is " .. (varlist.a and varlist.a or 0))
+varlist.b = varlist.a
+for i, s in pairs(varlist) do
+    if i ~= "b" then varlist[i] = nil end
+end
+print("overwriting line b")
+for line in string.gmatch(input, "%C+") do
+    table.insert(inst, line)
+end
+for i, s in pairs(inst) do
+    local t = {}
+    for word in string.gmatch(s, "[0-z]+") do
+        if word ~= ">" then
+            if tonumber(word) then word = tonumber(word) end
+            table.insert(t, word)
+        end
+    end
+    inst[i] = t
 end
 i = 1
 repeat
