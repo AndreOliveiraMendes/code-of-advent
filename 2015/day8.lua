@@ -299,10 +299,10 @@ input = [["azlgxdbljwygyttzkfwuxv"
 "gk"
 "\\zrs\\syur"]]
 --[[
-input = [[""
-"abc"
-"aaa\"aaa"
-"\x27"
+    input = [[""
+    "abc"
+    "aaa\"aaa"
+    "\x27"]]
 --]]
 strings = {}
 for string in string.gmatch(input, "%C+") do
@@ -327,4 +327,12 @@ for i, s in pairs(strings) do
 end
 print("the infos get are")
 print(string.format("total code = %d, total data = %d, dif = %d", tcode, tdata, tcode - tdata))
---1371
+tcode2 = 0
+for i, s in pairs(strings) do
+    s = string.gsub(s, [[\]], "//")
+    s = string.gsub(s, '"', '/"')
+    s = '"' .. s .. '"'
+    s = string.gsub(s, "/", [[\]])
+    tcode2 = tcode2 + #s
+end
+print(string.format("total code from original = %d, total code now = %d, dif = %d", tcode, tcode2, tcode2 - tcode))
