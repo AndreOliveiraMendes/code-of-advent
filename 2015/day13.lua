@@ -52,5 +52,23 @@ function getmaxhc(names, hc, used)
    end
    return max
 end
+ti = os.clock()
 max = getmaxhc(names, hc, {})
 print("max happynes change is " .. max)
+print(os.clock() - ti)
+table.insert(names,"me")
+for i, s in pairs(names) do
+   if s ~= "me" then
+      if not hc.me then hc.me = {} end
+      hc.me[s] = 0
+      hc[s].me = 0
+   end
+end
+ti = os.clock()
+max = getmaxhc(names, hc, {})
+print("max happynes change is " .. max)
+print(os.clock() - ti)
+--[[
+   part 1 ~= 1,5 s
+   part 2 ~= 15s
+--]]
