@@ -52,7 +52,7 @@ for line in string.gmatch(input, "%C+") do
     dist[loc1][loc2], dist[loc2][loc1] = tonumber(string.match(line, "%d+")), tonumber(string.match(line, "%d+"))
 end
 function getmind(loc, distl, used)
-    local min
+    local min, max
     if #loc ~= 0 then
         for i, s in ipairs(loc) do
             local aux = {}
@@ -60,8 +60,13 @@ function getmind(loc, distl, used)
                 if q ~= s then table.insert(aux, q) end
             end
             table.insert(used, s)
-            local dist = getmind(aux, dist, used)
+            local dist, distaux = getmind(aux, dist, used)
             if not min or dist < min then min = dist end
+            if not distaux then
+                if not max or dist > max then max = dist end
+            else
+                if not max or distaux > max then max = distaux end
+            end
             table.remove(used, #used)
         end
     else
@@ -71,7 +76,11 @@ function getmind(loc, distl, used)
         end
         return dist
     end
-    return min
+    return min, max
 end
-min = getmind(loc, dist, {})
+--part I
+min, max = getmind(loc, dist, {})
 print("the minimal distance is " .. min)
+--part II
+print("the maxime distance is " .. max)
+--251, 314, 867, 898
