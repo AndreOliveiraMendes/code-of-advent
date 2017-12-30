@@ -6,51 +6,51 @@ names = {}
 temp = {}
 i = 1
 for word in string.gmatch(str, "-?%w+") do
-   if (i == 2) then
-      word = tonumber(word)
-   end
-   table.insert(temp, word)
-   local chk = (i == 1) or (i == 3)
-   if chk then
-      for i, s in pairs(names) do
-         if s == word then chk = false end
-      end
-      if chk then
-         table.insert(names, word)
-      end
-   end
-   i = i % 3 + 1
+	if (i == 2) then
+		word = tonumber(word)
+	end
+	table.insert(temp, word)
+	local chk = (i == 1) or (i == 3)
+	if chk then
+		for i, s in pairs(names) do
+			if s == word then chk = false end
+		end
+		if chk then
+			table.insert(names, word)
+		end
+	end
+	i = i % 3 + 1
 end
 hc = {}
 for i = 1, #temp, 3 do
-   local name1, name2 = temp[i], temp[i + 2]
-   local amount = temp[i + 1]
-   if not hc[name1] then hc[name1] = {} end
-   hc[name1][name2] = amount
+	local name1, name2 = temp[i], temp[i + 2]
+	local amount = temp[i + 1]
+	if not hc[name1] then hc[name1] = {} end
+	hc[name1][name2] = amount
 end
 temp = nil
 function getmaxhc(names, hc, used)
-   local max
-   if #names ~= 0 then
-      for i, s in pairs(names) do
-         table.insert(used, s)
-         table.remove(names, i)
-         local hc = getmaxhc(names, hc, used)
-         if not max or hc > max then max = hc end
-         table.remove(used, #used)
-         table.insert(names, i, s)
-      end
-   else
-      local thc = 0
-      for i = 1, #used do
-         local j, k = i - 1, i + 1
-         if j < 1 then j = #used end
-         if k > #used then k = 1 end
-         thc = thc + hc[used[i]][used[j]] + hc[used[i]][used[k]]
-      end
-      return thc
-   end
-   return max
+	local max
+	if #names ~= 0 then
+		for i, s in pairs(names) do
+			table.insert(used, s)
+			table.remove(names, i)
+			local hc = getmaxhc(names, hc, used)
+			if not max or hc > max then max = hc end
+			table.remove(used, #used)
+			table.insert(names, i, s)
+		end
+	else
+		local thc = 0
+		for i = 1, #used do
+			local j, k = i - 1, i + 1
+			if j < 1 then j = #used end
+			if k > #used then k = 1 end
+			thc = thc + hc[used[i]][used[j]] + hc[used[i]][used[k]]
+		end
+		return thc
+	end
+	return max
 end
 ti = os.clock()
 max = getmaxhc(names, hc, {})
@@ -58,17 +58,18 @@ print("max happynes change is " .. max)
 print(os.clock() - ti)
 table.insert(names,"me")
 for i, s in pairs(names) do
-   if s ~= "me" then
-      if not hc.me then hc.me = {} end
-      hc.me[s] = 0
-      hc[s].me = 0
-   end
+	if s ~= "me" then
+		if not hc.me then hc.me = {} end
+		hc.me[s] = 0
+		hc[s].me = 0
+	end
 end
 ti = os.clock()
 max = getmaxhc(names, hc, {})
 print("max happynes change is " .. max)
 print(os.clock() - ti)
 --[[
-   part 1 ~= 1,5 s
-   part 2 ~= 15s
+	celphone / online (https://www.jdoodle.com/execute-lua-online) / online(https://repl.it/repls/FragrantExoticAmericanpainthorse)
+	part 1 ~= 1,5s / 0.5s / 0s
+	part 2 ~= 15s / 3.5s / 1.5s
 --]]
