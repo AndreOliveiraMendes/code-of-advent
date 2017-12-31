@@ -3,5 +3,5 @@ part I
 answer = 282749
 hash = 000002c655df7738246e88f6c1c43eb7
 part II
-answer = 
-hash = 
+answer = 9962624
+hash = 0000004b347bf4b398b3f62ace7cd301
