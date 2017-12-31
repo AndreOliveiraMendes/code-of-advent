@@ -1,5 +1,5 @@
-input = {43,3,4,10,21,44,4,6,47,41,34,17,17,44,36,31,46,9,27,38}
---input = {20, 15, 10, 5, 5}
+input = {43,3,4,10,21,44,4,6,47,41,34,17,17,44,36,31,46,9,27,38} --150
+--input = {20, 15, 10, 5, 5} 25
 function getsum(t)
    local sum = 0
    for i, s in pairs(t) do
@@ -38,5 +38,18 @@ possible = {}
 table.sort(input)
 gpc(input, 150, {}, possible)
 to = os.clock()
-print("done is " .. to - ti .. "s")
+print("done in " .. to - ti .. "s")
 print("the number of combination is " .. #possible)
+ti = os.clock()
+for i, s in pairs(possible) do
+   if not min or #s < min then
+      min = #s
+      mpossible = {}
+      table.insert(mpossible, s)
+   elseif #s == min then
+      table.insert(mpossible, s)
+   end
+end
+to = os.clock()
+print("done in " .. to - ti .. "s")
+print("the number of combination with min of containers is " .. #mpossible)
