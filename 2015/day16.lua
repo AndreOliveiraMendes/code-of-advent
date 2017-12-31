@@ -547,11 +547,27 @@ for i, s in pairs(comp) do
     for i, s in pairs(s) do
         if i ~= "name" and i ~= "ind" then
             count = count + 1
-            if ref[i] and ref[i] == s then
-                mcount = mcount + 1
-            end
+            if ref[i] == s then mcount = mcount + 1 end
         end
     end
     if mcount == count then index = s.ind end
 end
 print("the sue that sent the gift was " .. index)
+for i, s in pairs(comp) do
+    local count = 0
+    local mcount = 0
+    for i, s in pairs(s) do
+        if i ~= "name" and i ~= "ind" then
+            count = count + 1
+            if i == "cats" or i == "trees" then
+                if s > ref[i] then mcount = mcount + 1 end
+            elseif i == "pomeranians" or i == "goldfish" then
+                if s < ref[i] then mcount = mcount + 1 end
+            else
+                if s == ref[i] then mcount = mcount + 1 end
+            end
+        end
+    end
+    if mcount == count then index = s.ind end
+end
+print("the real sue that sent the gift was " .. index)
