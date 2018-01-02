@@ -46,6 +46,16 @@ e => HF
 e => NAl
 e => OMg]]
 input_element = "CRnCaSiRnBSiRnFArTiBPTiTiBFArPBCaSiThSiRnTiBPBPMgArCaSiRnTiMgArCaSiThCaSiRnFArRnSiRnFArTiTiBFArCaCaSiRnSiThCaCaSiRnMgArFYSiRnFYCaFArSiThCaSiThPBPTiMgArCaPRnSiAlArPBCaCaSiRnFYSiThCaRnFArArCaCaSiRnPBSiRnFArMgYCaCaCaCaSiThCaCaSiAlArCaCaSiRnPBSiAlArBCaCaCaCaSiThCaPBSiThPBPBCaSiRnFYFArSiThCaSiRnFArBCaCaSiRnFYFArSiThCaPBSiThCaSiRnPMgArRnFArPTiBCaPRnFArCaCaCaCaSiRnCaCaSiRnFYFArFArBCaSiThFArThSiThSiRnTiRnPMgArFArCaSiThCaPBCaSiRnBFArCaCaPRnCaCaPMgArSiRnFYFArCaSiThRnPBPMgAr"
+function tinsertr(t, value)
+    local chk = true
+    for i, s in pairs(t) do
+        if s == value then
+            chk = false
+            break
+        end
+    end
+    if chk then table.insert(t, value) end
+end
 temp = {}
 for word in string.gmatch(input, "%a+") do
     table.insert(temp, word)
@@ -53,14 +63,7 @@ end
 elemental_replace = {}
 elements = {}
 for i = 1, #temp, 2 do
-    local chk = true
-    for j, s in pairs(elements) do
-        if s == temp[i] then
-            chk = false
-            break
-        end
-    end
-    if chk then table.insert(elements, temp[i]) end
+    tinsertr(elements, temp[i])
     table.insert(elemental_replace, {temp[i], temp[i + 1]})
 end
 temp = nil
@@ -70,14 +73,7 @@ for i, s in pairs(elemental_replace) do
     local i, o = input_element:find(s_in)
     while i do
         local mol = replace_char(i, o, input_element, s_out)
-        local chk = true
-        for j, s in pairs(distincts_mol) do
-            if s == mol then
-                chk = false
-                break
-            end
-        end
-        if chk then table.insert(distincts_mol, mol) end
+        tinsertr(distincts_mol, mol)
         i, o = input_element:find(s_in, o + 1)
     end
 end
