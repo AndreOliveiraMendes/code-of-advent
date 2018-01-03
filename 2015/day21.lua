@@ -61,7 +61,7 @@ function game()
 	end
 	print("the game taked " .. turn .. " to end")
 end
---estimate
+--estimate the winner
 function simulation(p1, p2)
     local dmg1, dmg2 = math.max(p1.atk - p2.def, 1), math.max(p2.atk - p1.def, 1)
     local t1, t2 = math.ceil(p2.HP/dmg1), math.ceil(p1.HP/dmg2)
@@ -71,7 +71,7 @@ function simulation(p1, p2)
         return false
     end
 end
---buying items
+--buying items and simulating
 for i, s in pairs(shop.Weapons) do
     local cost = 0
     local p1 = {HP = player.HP, atk = player.atk, def = player.def}
@@ -81,13 +81,21 @@ for i, s in pairs(shop.Weapons) do
         if not min or cost < min then
             min = cost
         end
+    else
+        if not max or cost > max then
+            max = cost
+        end
     end
-    --0 rings
+    --0 rings, 1 shield
     for i, s in pairs(shop.Armor) do
         p1.atk, p1.def, cost = p1.atk + s.atk, p1.def + s.def, cost + s.cost
         if simulation(p1, p2) then
             if not min or cost < min then
                 min = cost
+            end
+        else
+            if not max or cost > max then
+                max = cost
             end
         end
         p1.atk, p1.def, cost = p1.atk - s.atk, p1.def - s.def, cost - s.cost
@@ -100,13 +108,21 @@ for i, s in pairs(shop.Weapons) do
             if not min or cost < min then
                 min = cost
             end
+        else
+            if not max or cost > max then
+                max = cost
+            end
         end
-        --shield
+        --1 ring, shield
         for i, s in pairs(shop.Armor) do
             p1.atk, p1.def, cost = p1.atk + s.atk, p1.def + s.def, cost + s.cost
             if simulation(p1, p2) then
                 if not min or cost < min then
                     min = cost
+                end
+            else
+                if not max or cost > max then
+                    max = cost
                 end
             end
             p1.atk, p1.def, cost = p1.atk - s.atk, p1.def - s.def, cost - s.cost
@@ -119,12 +135,21 @@ for i, s in pairs(shop.Weapons) do
                     if not min or cost < min then
                         min = cost
                     end
+                else
+                    if not max or cost > max then
+                        max = cost
+                    end
                 end
+		--2 ring, shield
                 for i, s in pairs(shop.Armor) do
                     p1.atk, p1.def, cost = p1.atk + s.atk, p1.def + s.def, cost + s.cost
                     if simulation(p1, p2) then
                         if not min or cost < min then
                             min = cost
+                        end
+                    else
+                        if not max or cost > max then
+                            max = cost
                         end
                     end
                     p1.atk, p1.def, cost = p1.atk - s.atk, p1.def - s.def, cost - s.cost
@@ -135,4 +160,5 @@ for i, s in pairs(shop.Weapons) do
         p1.atk, p1.def, cost = p1.atk - s.atk, p1.def - s.def, cost - s.cost
     end
 end
-print("the minimal cost is " .. tostring(min))
+print("the minimal cost and still win is " .. tostring(min))
+print("the max cost and still lose is " .. tostring(max))
