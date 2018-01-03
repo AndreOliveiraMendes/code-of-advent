@@ -99,3 +99,19 @@ while i >= 1 and i <= #input do
 end
 print("done")
 print("the value on register b is " .. varlist.b)
+print("a starting to 1 instead")
+varlist = {a = 1, b = 0}
+i = 1
+while i >= 1 and i <= #input do
+    local f, v1, v2 = table.unpack(input[i])
+    if isfunc(f, hlf, tpl, inc) then
+        f(v1, varlist)
+        i = i + 1
+    elseif isfunc(f, jmp) then
+        i = f(v1, i, varlist)
+    elseif isfunc(f, jio, jie) then
+        i = f(v1, v2, i, varlist)
+    end
+end
+print("done")
+print("the value on register b is " .. varlist.b)
