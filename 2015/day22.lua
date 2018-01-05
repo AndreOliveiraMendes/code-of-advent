@@ -191,43 +191,44 @@ function simulate(hp1, hp2, mp, shield, shield_timer, poison, poison_timer, rech
         if hp2 <= 0 then
             if not min_mana or mpcost < min_mana then
                 min_mana = mpcost
-            end   
-        else -- continue with boss turn, applying effect first
-            local def = 0 --extra defense
-            if shield then
-                def = effects["Shield"].def
-                shield_timer = shield_timer - 1
-                if shield_timer == 0 then
-                    shield = false
-                    shield_timer = nil
-                end
             end
-            if poison then
-                hp2 = hp2 - 3
-                poison_timer = poison_timer - 1
-                if poison_timer == 0 then
-                    poison = false
-                    poison_timer = nil
-                end
-             end
-            if recharge then
-                mp = mp + 101
-                recharge_timer = recharge_timer - 1
-                if recharge_timer == 0 then
-                    recharge = false
-                    recharge_timer = nil
-                end
+            goto skip
+        end
+        -- continue with boss turn, applying effect first
+        local def = 0 --extra defense
+        if shield then
+            def = effects["Shield"].def
+            shield_timer = shield_timer - 1
+            if shield_timer == 0 then
+                shield = false
+                shield_timer = nil
             end
-            if hp2 <= 0 then
-                if not min_mana or mpcost < min_mana then
-                    min_mana = mpcost
-                end
-            else
-                hp1 = hp1 - damage(boss.atk, player.def + def)
-                if hp1 > 0 then
-                    simulate(hp1, hp2, mp, shield, shield_timer, poison, poison_timer, recharge, recharge_timer, options, mpcost, hardmode)
-                end
+        end
+        if poison then
+            hp2 = hp2 - 3
+            poison_timer = poison_timer - 1
+            if poison_timer == 0 then
+                poison = false
+                poison_timer = nil
             end
+        end
+        if recharge then
+            mp = mp + 101
+            recharge_timer = recharge_timer - 1
+            if recharge_timer == 0 then
+                recharge = false
+                recharge_timer = nil
+            end
+        end
+        if hp2 <= 0 then
+            if not min_mana or mpcost < min_mana then
+                min_mana = mpcost
+            end
+            goto skip
+        end
+        hp1 = hp1 - damage(boss.atk, player.def + def)
+        if hp1 > 0 then
+            simulate(hp1, hp2, mp, shield, shield_timer, poison, poison_timer, recharge, recharge_timer, options, mpcost, hardmode)
         end
         ::skip::
     end
