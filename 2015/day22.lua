@@ -116,7 +116,14 @@ function game()
     end
 end
 --game()
-function simulate(hp1, hp2, mp, shield, shield_timer, poison, poison_timer, recharge, recharge_timer, options, mpcost)
+function simulate(hp1, hp2, mp, shield, shield_timer, poison, poison_timer, recharge, recharge_timer, options, mpcost, hardmode)
+    --hardmode
+    if hardmode then
+        hp1 = hp1 - 1
+        if hp1 <= 0 then
+            return
+        end
+    end
     --effects on player turn
     if shield then
         shield_timer = shield_timer - 1
@@ -218,10 +225,11 @@ function simulate(hp1, hp2, mp, shield, shield_timer, poison, poison_timer, rech
             else
                 hp1 = hp1 - damage(boss.atk, player.def + def)
                 if hp1 > 0 then
-                    simulate(hp1, hp2, mp, shield, shield_timer, poison, poison_timer, recharge, recharge_timer, options, mpcost)
+                    simulate(hp1, hp2, mp, shield, shield_timer, poison, poison_timer, recharge, recharge_timer, options, mpcost, hardmode)
                 end
             end
         end
+        ::skip::
     end
 end
 analys = {}
@@ -229,3 +237,8 @@ ti = os.clock()
 simulate(player.HP, boss.HP, player.MP, false, nil, false, nil, false, nil, {"Magic_Missile", "Drain", "Shield", "Poison", "Recharge"}, 0)
 print("done in " .. os.clock() - ti)
 print("the minimal cost to win is " .. tostring(min_mana))
+min_mana = nil
+ti = os.clock()
+simulate(player.HP, boss.HP, player.MP, false, nil, false, nil, false, nil, {"Magic_Missile", "Drain", "Shield", "Poison", "Recharge"}, 0, true)
+print("done in " .. os.clock() - ti)
+print("in hardmode, the minimal cost to win is " .. tostring(min_mana))
