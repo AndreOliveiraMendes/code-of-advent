@@ -1,4 +1,4 @@
-keyword = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
+keyword1 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
 input = [[LURLDDLDULRURDUDLRULRDLLRURDUDRLLRLRURDRULDLRLRRDDULUDULURULLURLURRRLLDURURLLUURDLLDUUDRRDLDLLRUUDURURRULURUURLDLLLUDDUUDRULLRUDURRLRLLDRRUDULLDUUUDLDLRLLRLULDLRLUDLRRULDDDURLUULRDLRULRDURDURUUUDDRRDRRUDULDUUULLLLURRDDUULDRDRLULRRRUUDUURDULDDRLDRDLLDDLRDLDULUDDLULUDRLULRRRRUUUDULULDLUDUUUUDURLUDRDLLDDRULUURDRRRDRLDLLURLULDULRUDRDDUDDLRLRRDUDDRULRULULRDDDDRDLLLRURDDDDRDRUDUDUUDRUDLDULRUULLRRLURRRRUUDRDLDUDDLUDRRURLRDDLUUDUDUUDRLUURURRURDRRRURULUUDUUDURUUURDDDURUDLRLLULRULRDURLLDDULLDULULDDDRUDDDUUDDUDDRRRURRUURRRRURUDRRDLRDUUULLRRRUDD
 DLDUDULDLRDLUDDLLRLUUULLDURRUDLLDUDDRDRLRDDUUUURDULDULLRDRURDLULRUURRDLULUDRURDULLDRURUULLDLLUDRLUDRUDRURURUULRDLLDDDLRUDUDLUDURLDDLRRUUURDDDRLUDDDUDDLDUDDUUUUUULLRDRRUDRUDDDLLLDRDUULRLDURLLDURUDDLLURDDLULLDDDRLUDRDDLDLDLRLURRDURRRUDRRDUUDDRLLUDLDRLRDUDLDLRDRUDUUULULUDRRULUDRDRRLLDDRDDDLULURUURULLRRRRRDDRDDRRRDLRDURURRRDDULLUULRULURURDRRUDURDDUURDUURUURUULURUUDULURRDLRRUUDRLLDLDRRRULDRLLRLDUDULRRLDUDDUUURDUDLDDDUDL
 RURDRUDUUUUULLLUULDULLLDRUULURLDULULRDDLRLLRURULLLLLLRULLURRDLULLUULRRDURRURLUDLULDLRRULRDLDULLDDRRDLLRURRDULULDRRDDULDURRRUUURUDDURULUUDURUULUDLUURRLDLRDDUUUUURULDRDUDDULULRDRUUURRRDRLURRLUUULRUDRRLUDRDLDUDDRDRRUULLLLDUUUULDULRRRLLRLRLRULDLRURRLRLDLRRDRDRLDRUDDDUUDRLLUUURLRLULURLDRRULRULUDRUUURRUDLDDRRDDURUUULLDDLLDDRUDDDUULUDRDDLULDDDDRULDDDDUUUURRLDUURULRDDRDLLLRRDDURUDRRLDUDULRULDDLDDLDUUUULDLLULUUDDULUUDLRDRUDLURDULUDDRDRDRDDURDLURLULRUURDUDULDDLDDRUULLRDRLRRUURRDDRDUDDLRRLLDRDLUUDRRDDDUUUDLRRLDDDUDRURRDDUULUDLLLRUDDRULRLLLRDLUDUUUUURLRRUDUDDDDLRLLULLUDRDURDDULULRDRDLUDDRLURRLRRULRL
@@ -8,33 +8,63 @@ lines = {}
 for line in string.gmatch(input, "%C+") do
     table.insert(lines, line)
 end
-print("keyboard")
+print("keyboard 1")
 print("<=========>")
-for i, s in pairs(keyword) do
+for i, s in pairs(keyword1) do
     print(" [" .. table.concat(s, "][") .. "]")
 end
 print("<=========>")
-function move(x, y, dir)
+function move(x, y, dir, keyword)
+    local yn, xn = x, y
     if dir == "L" then
-        return y, math.max(x - 1, 1)
+        yn, xn = y, x - 1
     elseif dir == "R" then
-        return y, math.min(x + 1, 3)
+        yn, xn = y, x + 1
     elseif dir == "U" then
-        return math.max(y - 1, 1), x
+        yn, xn = y - 1, x
     elseif dir == "D" then
-        return math.min(y + 1, 3), x
+        yn, xn = y + 1, x
+    end
+    if not keyword[yn] or not keyword[yn][xn] then
+        return y, x
+    else
+        return yn, xn
     end
 end
 y, x = 2, 2
 for i, s in pairs(lines) do
     for j = 1, #s do
         local dir = string.sub(s, j, j)
-        y, x = move(x, y, dir)
+        y, x = move(x, y, dir, keyword1)
     end
     if not code then
-        code = keyword[y][x]
+        code = keyword1[y][x]
     else
-        code = code .. keyword[y][x]
+        code = code .. keyword1[y][x]
+    end
+end
+print("the bathroom code is " .. code)
+keyword2 = {{[3] = 1}, {[2] = 2, [3] = 3, [4] = 4}, {5, 6, 7, 8, 9}, {[2] = "A", [3] = "B", [4] = "C"}, {[3] = "D"}}
+print("keyboard 2")
+print("<===============>")
+for i, s in pairs(keyword2) do
+    local   function f(s)
+                return s and "[" .. s .. "]" or "[.]"
+            end
+    print(" " .. f(s[1]) .. f(s[2]) .. f(s[3]) .. f(s[4]) .. f(s[5]))
+end
+print("<===============>")
+code = nil
+y, x = 3, 1
+for i, s in pairs(lines) do
+    for j = 1, #s do
+        local dir = string.sub(s, j, j)
+        y, x = move(x, y, dir, keyword2)
+    end
+    if not code then
+        code = keyword2[y][x]
+    else
+        code = code .. keyword2[y][x]
     end
 end
 print("the bathroom code is " .. code)
