@@ -1756,3 +1756,27 @@ for i, s in pairs(triangle) do
     end
 end
 print("there are " .. count .. " possible triangles")
+triangle2 = {}
+for i = 1, #triangle, 3 do
+    local s1, s2, s3 = triangle[i], triangle[i + 1], triangle[i + 2]
+    table.insert(triangle2, {a = s1.a, b = s2.a, c = s3.a})
+    table.insert(triangle2, {a = s1.b, b = s2.b, c = s3.b})
+    table.insert(triangle2, {a = s1.c, b = s2.c, c = s3.c})
+end
+--[[
+    a b c
+    a b c
+    a b c
+    #S1 = (c/3)xl = cl/3
+    a a a
+    b b b
+    c c c
+    #S2 = cx(l/3) = cl/3
+--]]
+count = 0
+for i, s in pairs(triangle2) do
+    if f(s.a, s.b, s.c) and f(s.b, s.c, s.a) and f(s.a, s.c, s.b) then
+        count = count + 1
+    end
+end
+print("now, there are " .. count .. " possible triangles")
