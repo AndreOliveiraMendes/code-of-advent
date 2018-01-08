@@ -1,3 +1,25 @@
+function decript(str, n)
+    local t = {}
+    for w in string.gmatch(str, "%a+") do
+        table.insert(t, #w)
+    end
+    local tstr = string.gsub(str, "-", "")
+    local sum = 0
+    local fstr = ""
+    for i = 1, #tstr do
+        local cpos = string.sub(tstr, i, i):byte() - string.byte("a")
+        cpos = (cpos + n)%26 + string.byte("a")
+        fstr = fstr .. string.char(cpos)
+    end
+    for i, s in pairs(t) do
+        if i ~= #t then
+            sum = sum + s
+            fstr = string.sub(fstr, 1, sum) .. "-" .. string.sub(fstr, sum + 1, #fstr)
+            sum = sum + 1
+        end
+    end
+    return fstr
+end
 function checksum(str, chk)
     local i1, i2 = string.byte("a"), string.byte("z")
     local t = {}
@@ -25,7 +47,7 @@ function analy(str)
     str = string.sub(str, 1, #str - #roomcode - #chksum + 1)
     roomcode = tonumber(string.sub(roomcode, 2, #roomcode - 1))
     chksum = string.sub(chksum, 2, #chksum - 1)
-    return checksum(str, chksum), roomcode
+    return checksum(str, chksum), roomcode, decript(str, roomcode)
 end
 input = [=[aczupnetwp-dnlgpyrpc-sfye-dstaatyr-561[patyc]
 jsehsyafy-vqw-ljsafafy-866[nymla]
@@ -1019,10 +1041,17 @@ nwlddtqtpo-mldvpe-fdpc-epdetyr-509[dpetl]
 wfintfhynaj-idj-qfgtwfytwd-229[efudw]
 yhwooebeaz-nwilwcejc-ydkykhwpa-owhao-160[skuyi]]=]
 sum = 0
+nt = {}
 for line in string.gmatch(input, "%C+") do
-    local chk, rc = analy(line)
+    local chk, rc, rn = analy(line)
     if chk then
         sum = sum + rc
+        table.insert(nt, {rn, rc})
     end
 end
 print("the sum of real rooms are " .. sum)
+for i, s in pairs(nt) do
+    if s[1] == "northpole-object-storage" then
+        print("the room where noth pole objects are is " .. s[2])
+    end
+end
