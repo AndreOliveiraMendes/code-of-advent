@@ -623,6 +623,8 @@ uufwzhll
 jnlztauj
 ktujpjae]]
 message = {}
+message1 = {}
+message2 = {}
 for line in string.gmatch(input, "%C+") do
     for i = 1, #line do
         if not message[i] then message[i] = {} end
@@ -635,13 +637,22 @@ for i, s in pairs(message) do
         if not t[a] then t[a] = 0 end
         t[a] = t[a] + 1
     end
-    local chr, max
+    local chr, con
     for a, n in pairs(t) do
-        if not max or n > max then
-            max = n
+        if not con or n > con then
+            con = n
             chr = a
         end
     end
-    message[i] = chr
+    message1[i] = chr
+    chr, con = nil, nil
+    for a, n in pairs(t) do
+        if not con or n < con then
+            con = n
+            chr = a
+        end
+    end
+    message2[i] = chr
 end
-print("the message is " .. table.concat(message))
+print("the message is " .. table.concat(message1))
+print("the original message is " .. table.concat(message2))
