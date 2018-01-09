@@ -6,11 +6,15 @@ for y = 0, yl do
         screen[y][x] = 0
     end
 end
-function debug(i)
+function debug(i, mode)
     if i then print(i) end
     for y = 0, yl do
         local s = screen[y]
-        print(s[0], table.unpack(s))
+        if not mode or mode == 0 then
+            print(s[0], table.unpack(s))
+        else
+            print(s[0] .. table.concat(s))
+        end
     end
 end
 function rect(dx, dy)
@@ -251,3 +255,41 @@ for x = 0, xl do
     end
 end
 print("the total of pixels on is " .. sc)
+letters = {}
+for i = 1, 10 do
+    local   function f(v)
+                if v == 0 then
+                    return "0"
+                else
+                    return "1"
+                end
+            end
+    x = 5*(i - 1)
+    local l = ""
+    for y = 0, 5 do
+        if y ~= 0 then
+            l = l .. string.char(10)
+        end
+        l = l .. f(screen[y][x]) .. f(screen[y][x + 1]) .. f(screen[y][x + 2]) .. f(screen[y][x + 3]) .. f(screen[y][x + 4])
+    end
+    table.insert(letters, l)
+end
+message = ""
+list = {
+    ["11100\n10010\n10010\n11100\n10100\n10010"] = "R",
+    ["10010\n10010\n10010\n10010\n10010\n01100"] = "U",
+    ["01100\n10010\n10000\n10000\n10010\n01100"] = "C",
+    ["11110\n10000\n11100\n10000\n10000\n11110"] = "E",
+    ["01100\n10010\n10010\n10010\n10010\n01100"] = "O",
+    ["01110\n00100\n00100\n00100\n00100\n01110"] = "I",
+    ["10000\n10000\n10000\n10000\n10000\n11110"] = "L"
+}
+for i, s in pairs(letters) do
+    for j, v in pairs(list) do
+        if j == s then
+            message = message .. v
+            break
+        end
+    end
+end
+print("message is:" .. message)
