@@ -1,5 +1,4 @@
-function check(str)
-    local chk = false
+function checkTLS(str)
     local str1 = str:gsub("%b[]", ",")
     local i, j = str:find("%["), str:find("%]")
     local ti, to = {}, {}
@@ -31,6 +30,37 @@ function check(str)
             end   
         end   
     end
+    return chk
+end
+function checkSSL(str)
+    local str1 = str:gsub("%b[]", ",")
+    local ti, to = {}, {}
+    for word in string.gmatch(str1, "%a+") do
+        table.insert(ti, word)
+    end
+    for word in string.gmatch(str, "%b[]") do
+        table.insert(to, word:sub(2, #word - 1))
+    end
+    local chk = false
+    for _, p in pairs(ti) do
+        for i = 1, #p - 2 do
+            local a1, a2, a3 = p:sub(i, i), p:sub(i + 1, i + 1), p:sub(i + 2, i + 2)
+            if a1 ~= a2 and a1 == a3 then
+                for _, q in pairs(to) do
+                    for j = 1, #q - 2 do
+                        local b1, b2, b3 = q:sub(j, j), q:sub(j + 1, j + 1), q:sub(j + 2, j + 2)
+                        if b1 ~= b2 and b1 == b3 then
+                            if a1 == b2 and a2 == b1 then
+                                chk = true
+                                goto skip
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    ::skip::
     return chk
 end
 input = [=[rhamaeovmbheijj[hkwbkqzlcscwjkyjulk]ajsxfuemamuqcjccbc
@@ -2033,10 +2063,14 @@ sgjjqocmmcccpem[odeofpebaahroicm]pluzqzwkdzcovxic[zmyulzpuuiabvykn]ylxzlyooxnlib
 btrucplpxrokmcts[gytdxlzkfakenliallw]qhxznozsjsvhvnzhf
 nefefqadkmytguyp[ucqagcoyxinbrvbw]neksoxgtnnfojobtx[bxhdwvwfhybtbzkijj]poayieifsaocrboesfe[tnggfefcucifowqp]olmjwaqlaiwkkbtruw
 tivudfusgnewzshs[mausfjbgxmyibin]yponuityptavbhekrlg[qeyafuevtlqemtfa]owtdxadrwwbxbrkl[obfcyxbifipwhduubu]mjocivgvrcbrllso]=]
-count = 0
+count_TLS, count_SSL = 0, 0
 for line in string.gmatch(input, "%C+") do
-    if check(line) then
-        count = count + 1
+    if checkTLS(line) then
+        count_TLS = count_TLS + 1
+    end
+    if checkSSL(line) then
+        count_SSL = count_SSL + 1
     end
 end
-print(count .. " IPS suport it")
+print(count_TLS .. " IPS suport TLS")
+print(count_SSL .. " IPS suport SSL")
