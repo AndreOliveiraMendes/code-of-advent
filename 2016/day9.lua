@@ -1,5 +1,5 @@
 function descomples(str)
-    fstr = ""
+    local fstr = ""
     repeat
         local i1, i2 = str:find("%(%d+x%d+%)")
         if i1 and i1 == 1 then
@@ -21,3 +21,22 @@ input = "(6x6)AFPLBX(2x3)ZE(53x13)(4x7)ZGQO(2x4)NJ(1x8)M(24x11)(18x7)HMLOASMJNGZ
 print("input size:" .. #input)
 output = descomples(input)
 print("output size:" .. #output)
+function getlenght(str)
+    local t = {}
+    local i1, i2 = str:find("%(%d+x%d+%)")
+    while i1 do
+        local d1, d2 = str:find("%d+")
+        local d3, d4 = str:find("%d+", d2 + 1)
+        local n1, n2 = tonumber(str:sub(d1, d2)), tonumber(str:sub(d3, d4))
+        table.insert(t, {str = str:sub(i2 + 1, i2 + n1), qtd = n2})
+        str = str:sub(1, i1 - 1) .. str:sub(i2 + n1 + 1)
+        i1, i2 = str:find("%(%d+x%d+%)")
+    end
+    local lenght = #str
+    for i, s in pairs(t) do
+        lenght = lenght + getlenght(s.str)*s.qtd
+    end
+    return lenght
+end
+lenght = getlenght(input)
+print("the lenght of output with improved format is " .. lenght)
