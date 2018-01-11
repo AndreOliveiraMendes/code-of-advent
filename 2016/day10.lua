@@ -246,7 +246,6 @@ for set in input:gmatch("value %d+ goes to bot %d+") do
     table.insert(bot[t[2]], t[1])
 end
 instructions = {}
---231, 21, 190, 0, 19, 1
 for inst in input:gmatch("bot %d+ gives low to bot %d+ and high to bot %d+") do
     local t = {}
     for w in inst:gmatch("%w+") do
@@ -276,15 +275,10 @@ for inst in input:gmatch("bot %d+ gives low to output %d+ and high to output %d+
     instructions[tonumber(t[2])] = {low = t[6], lown = tonumber(t[7]), high = t[11], highn = tonumber(t[12])}
 end
 bot2c = {}
---bot1c = {}
 for i = 0, max do
     if not bot[i] then bot[i] = {} end
     if #bot[i] == 2 then
         table.insert(bot2c, i)
-    --[[
-    elseif #bot[i] == 1 then
-        table.insert(bot1c, i)
-    --]]
     end
 end
 repeat
@@ -315,9 +309,5 @@ repeat
         out[highn] = high
     end
 until (#bot2c == 0)
---[[
-for i = 0, #out, 3 do
-    print(i, out[i], out[i + 1], out[i + 2])
-end
---]]
 print("the bot comparing chip 17 with chip 61 is " .. Q1)
+print("the value of multiply of chip value in out 0, 1 and 2 is " .. out[0]*out[1]*out[2])
