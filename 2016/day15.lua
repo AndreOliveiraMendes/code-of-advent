@@ -27,3 +27,13 @@ while true do
     t = t + 1
 end
 print("the time to pless the button is " .. tostring(t1) .. "s")
+table.insert(discs, {pos_lim = 11, pos_0 = 0})
+t = 0
+while true do
+    if f(t) then
+        t1 = t
+        break
+    end
+    t = t + 1
+end
+print("the time to pless the button is " .. tostring(t1) .. "s")
