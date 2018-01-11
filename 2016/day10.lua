@@ -229,34 +229,6 @@ bot 96 gives low to output 10 and high to bot 66
 value 73 goes to bot 165
 bot 151 gives low to bot 137 and high to bot 123
 bot 122 gives low to bot 9 and high to bot 201]]
---[[
-    count_lines, count_values_set = 0, 0
-    count_bot_bot, count_bot_out, count_out_bot, count_out_out = 0, 0, 0, 0
-    for lines in string.gmatch(input, "%C+") do
-        count_lines = count_lines + 1
-    end
-    for lines in string.gmatch(input, "value %d+ goes to bot %d+") do
-        count_values_set = count_values_set + 1
-    end
-    for lines in string.gmatch(input, "bot %d+ gives low to bot %d+ and high to bot %d+") do
-        count_bot_bot = count_bot_bot + 1
-    end
-    for lines in string.gmatch(input, "bot %d+ gives low to bot %d+ and high to output %d+") do
-        count_bot_out = count_bot_out + 1
-    end
-    for lines in string.gmatch(input, "bot %d+ gives low to output %d+ and high to bot %d+") do
-        count_out_bot = count_out_bot + 1
-    end
-    for lines in string.gmatch(input, "bot %d+ gives low to output %d+ and high to output %d+") do
-        count_out_out = count_out_out + 1
-    end
-    print("number of lines:" .. count_lines)
-    print("number of chip set direct:" .. count_values_set)
-    print("low bot high bot:" .. count_bot_bot)
-    print("low bot high out:" .. count_bot_out)
-    print("low out high out:" .. count_out_bot)
-    print("low out high out:" .. count_out_out)
---]]
 for bot in input:gmatch("bot %d+") do
     local d = tonumber(bot:match("%d+"))
     if not max or d > max then
@@ -303,11 +275,49 @@ for inst in input:gmatch("bot %d+ gives low to output %d+ and high to output %d+
     end
     instructions[tonumber(t[2])] = {low = t[6], lown = tonumber(t[7]), high = t[11], highn = tonumber(t[12])}
 end
+bot2c = {}
+--bot1c = {}
 for i = 0, max do
-    if bot[i] and #bot[i] == 2 then
-        ind = i
-        break
+    if not bot[i] then bot[i] = {} end
+    if #bot[i] == 2 then
+        table.insert(bot2c, i)
+    --[[
+    elseif #bot[i] == 1 then
+        table.insert(bot1c, i)
+    --]]
     end
 end
-print("starting at bot: " .. ind)
-inds = {}
+repeat
+    local botn = bot2c[1]
+    local lowt, lown, hight, highn = instructions[botn].low, instructions[botn].lown, instructions[botn].high, instructions[botn].highn
+    local low, high = math.min(bot[botn][1], bot[botn][2]), math.max(bot[botn][1], bot[botn][2])
+    if low == 17 and high == 61 then
+        Q1 = botn
+    end
+    bot[botn] = {}
+    table.remove(bot2c, 1)
+    if lowt == "bot" then
+        table.insert(bot[lown], low)
+        if #bot[lown] == 2 then
+            table.insert(bot2c, lown)
+        end
+    else
+        if out[lown] then print("!") end
+        out[lown] = low
+    end
+    if hight == "bot" then
+        table.insert(bot[highn], high)
+        if #bot[highn] == 2 then
+            table.insert(bot2c, highn)
+        end
+    else
+        if out[highn] then print("!!") end
+        out[highn] = high
+    end
+until (#bot2c == 0)
+--[[
+for i = 0, #out, 3 do
+    print(i, out[i], out[i + 1], out[i + 2])
+end
+--]]
+print("the bot comparing chip 17 with chip 61 is " .. Q1)
