@@ -22,9 +22,7 @@ function goalchk(x, y)
 end
 function newup(step, x, y)
     if step <= 51 then
-        if not maze[y] or not maze[y][x] then
-            dist = dist + 1
-        end
+        dist = dist + 1
     end
 end
 repeat
@@ -41,32 +39,32 @@ repeat
         if not maze[y] then maze[y] = {} end
         maze[y][x] = f(x, y)
         if x - 1 >= 0 and (not maze[y] or not maze[y][x - 1]) then
-            if f(x - 1, y) == 1 then
-                maze[y][x - 1] = 1
-            else
+            local f = f(x - 1, y)
+            maze[y][x - 1] = f
+            if f == 0 then
                 table.insert(t, {x = x - 1, y = y})
             end
         end
         if not maze[y] or not maze[y][x + 1] then
-            if f(x + 1, y) == 1 then
-                maze[y][x + 1] = 1
-            else
+            local f = f(x + 1, y)
+            maze[y][x + 1] = f
+            if f == 0 then
                 table.insert(t, {x = x + 1, y = y})
             end
         end
         if y - 1 >= 0 and (not maze[y - 1] or not maze[y - 1][x]) then
-            if f(x, y - 1) == 1 then
-                if not maze[y - 1] then maze[y - 1] = {} end
-                maze[y - 1][x] = 1
-            else
+            local f = f(x, y - 1)
+            if not maze[y - 1] then maze[y - 1] = {} end
+            maze[y - 1][x] = f
+            if f == 0 then
                 table.insert(t, {x = x, y = y - 1})
             end
         end
         if not maze[y + 1] or not maze[y + 1][x] then
-            if f(x, y + 1) == 1 then
-                if not maze[y + 1] then maze[y + 1] = {} end
-                maze[y + 1][x] = 1
-            else
+            local f = f(x, y + 1)
+            if not maze[y + 1] then maze[y + 1] = {} end
+            maze[y + 1][x] = f
+            if f == 0 then
                 table.insert(t, {x = x, y = y + 1})
             end
         end
