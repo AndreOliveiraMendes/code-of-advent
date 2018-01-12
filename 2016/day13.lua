@@ -16,14 +16,23 @@ maze = {}
 unexplored = {}
 table.insert(unexplored, {x = 1, y = 1})
 step = 0
+dist = 0
 function goalchk(x, y)
     return x == 31 and y == 39
+end
+function newup(step, x, y)
+    if step <= 51 then
+        if not maze[y] or not maze[y][x] then
+            dist = dist + 1
+        end
+    end
 end
 repeat
     local t = {}
     step = step + 1
     for i, s in pairs(unexplored) do
         local x, y, s = s.x, s.y, nil
+        newup(step, x, y)
         if goalchk(x, y) then
             goal = true
             break
@@ -66,3 +75,4 @@ repeat
 until goal
 print("total of " .. step .. " squares explored in minimal path")
 print(step - 1 .. " number of steps necessary")
+print("in 50 steps, there was " .. dist .. " diferent squares exploreds")
