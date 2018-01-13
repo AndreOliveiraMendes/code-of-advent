@@ -1,13 +1,22 @@
 input = "11011110011011101"
 size = 272
 output = input
-function f(a)
-    local b = ""
-    for i = 1, #a do
-        local d = tonumber(a:sub(i, i))
-        b = tostring(1 - d) .. b
+function f(a, n)
+    local k = #a
+    local max = math.ceil(math.log(n + 1, 2) - math.log(k + 1, 2))
+    for i = 1, max do
+        local j = #a
+        k = j + 1
+        a = a .. "0"
+        while j > 0 do
+            k = k + 1
+            if k > n then goto skip end
+            a = a .. tostring(1 - tonumber(a:sub(j, j)))
+            j = j - 1
+        end
     end
-    return a .. 0 .. b
+    ::skip::
+    return a
 end
 function g(d1, d2)
     d1, d2 = tonumber(d1), tonumber(d2)
@@ -17,12 +26,7 @@ function g(d1, d2)
         return 0
     end
 end
-while #output < size do
-    output = f(output)
-end
-if #output > size then
-    output = output:sub(1, size)
-end
+output = f(input, size)
 print("input is " .. input)
 print("output after process " .. output)
 repeat
@@ -32,4 +36,17 @@ repeat
         chks = chks:gsub("(%d)(%d)", g)
     end
 until (#chks% 2 == 1)
-print("produces checksum of " .. chks)
+print("produces checksum (272) of " .. chks)
+chks = nil
+size = 35651584
+output = f(input, size)
+print("input is " .. input)
+print("output after process " .. output)
+repeat
+    if not chks then
+        chks = output:gsub("(%d)(%d)", g)
+    else
+        chks = chks:gsub("(%d)(%d)", g)
+    end
+until (#chks% 2 == 1)
+print("produces checksum (35651584) of " .. chks)
