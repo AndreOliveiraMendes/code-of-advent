@@ -1,12 +1,8 @@
 input = "^..^^.^^^..^^.^...^^^^^....^.^..^^^.^.^.^^...^.^.^.^.^^.....^.^^.^.^.^.^.^.^^..^^^^^...^.....^....^."
 s = 40
 local map = {}
-function f(x, y, z)
-    local r1 = x == 1 and y == 1 and z == 0
-    local r2 = x == 0 and y == 1 and z == 1
-    local r3 = x == 1 and y == 0 and z == 0
-    local r4 = x == 0 and y == 0 and z == 1
-    return r1 or r2 or r3 or r4
+function f(x, y)
+    return x ~= y
 end
 for i = 1, s do
     map[i] = {}
@@ -21,8 +17,8 @@ for i = 1, s do
     else
         local old_map = map[i - 1]
         for j = 1, #old_map do
-            local left, center, right = (j == 1) and 0 or old_map[j - 1], old_map[j], (j == #old_map) and 0 or old_map[j + 1]
-            if f(left, center, right) then
+            local left, right = (j == 1) and 0 or old_map[j - 1], (j == #old_map) and 0 or old_map[j + 1]
+            if f(left, right) then
                 map[i][j] = 1
             else
                 map[i][j] = 0
