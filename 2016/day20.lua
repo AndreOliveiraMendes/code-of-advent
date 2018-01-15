@@ -1073,18 +1073,24 @@ pre_input = [[919958672-920375477
 1513199351-1529351133
 914180376-940277913
 760395312-770866764]]
+function merge_aux(a, b, c, d)
+    a, b = math.min(a, b), math.max(a, b)
+    c, d = math.min(c, d), math.max(c, d)
+    if ((a <= c) and (b >= c)) or ((a <= d) and (b >= d)) or ((c <= a) and (d >= a)) or ((c <= b) and (d >= b)) then
+        return true
+    elseif (c == b + 1) or (a == d + 1) then
+        return true
+    end
+    return false
+end
 input = {}
 for a_b in pre_input:gmatch("%d+%-%d+") do
     local a = tonumber(a_b:match("%d+"))
     local b = tonumber(a_b:match("%-%d+"):match("%d+"))
     local chk = true
     for _, s in pairs(input) do
-        if s.inf <= a and s.sup >= a then
-            s.sup = math.max(b, s.sup)
-            chk = false
-            break
-        elseif s.inf <= b and s.sup >= b then
-            s.inf = math.min(a, s.inf)
+        if merge_aux(a, b, s.inf, s.sup) then
+            s.inf, s.sup = math.min(a, b, s.inf, s.sup), math.max(a, b, s.sup, s.sup)
             chk = false
             break
         end
@@ -1093,17 +1099,55 @@ for a_b in pre_input:gmatch("%d+%-%d+") do
         table.insert(input, {inf = a, sup = b})
     end
 end
-ip1 = 0
-function f(ip1, list)
+--print(#input, 1075)
+function control()
+    w = 0
+    for i = 1, #input do
+        local p = input[i]
+        for j = i + 1, #input do
+            local q = input[j]
+            if merge_aux(p.inf, p.sup, q.inf, q.sup) then
+                w = w + 1
+            end
+        end
+    end
+    return w
+end
+repeat
+    i = 1
+    while i <= #input do
+        local p = input[i]
+        local j = i + 1
+        while j <= #input do
+            local q = input[j]
+            if merge_aux(p.inf, p.sup, q.inf, q.sup) then
+                p.inf, p.sup = math.min(p.inf, p.sup, q.inf, q.sup), math.max(p.inf, p.sup, q.inf, q.sup)
+                table.remove(input, j)
+            else
+                j = j + 1
+            end
+        end
+        i = i + 1
+    end
+    --print(#input, 1075)
+until (control() == 0)
+ip = 0
+function f(ip, list)
     for _, s in pairs(list) do
-        if s.inf <= ip1 and s.sup >= ip1 then
+        if s.inf <= ip and s.sup >= ip then
             return s.sup + 1, false
         end
     end
-    return ip1, true
+    return ip, true
 end
 while true do
-    ip1, chk = f(ip1, input)
+    ip, chk = f(ip, input)
     if chk then break end
 end
-print("the min ip not blocked is:\n" .. ip1)
+print("the min ip not blocked is:\n" .. ip)
+ip_bc = 0
+for _, s in pairs(input) do
+    ip_bc = ip_bc + s.sup - s.inf + 1
+end
+print("in a total of " .. 4294967295 - 0 + 1 .. " there are " .. ip_bc .. " ips blocked")
+print("wich make a total of " .. 4294967295 - 0 + 1 - ip_bc .. " ip frees")
