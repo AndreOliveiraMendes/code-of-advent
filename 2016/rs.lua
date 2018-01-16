@@ -40,3 +40,20 @@ function scrab(pass, line)
     end
     return pass
 end
+t = {"a", "b", "c", "d", "e"}
+function perm(t1, t2, list)
+    if #t1 == 0 then
+        table.insert(list, {table.unpack(t2)})
+    else
+        for i, s in pairs(t1) do
+            table.remove(t1, i)
+            table.insert(t2, s)
+            perm(t1, t2, list)
+            table.remove(t2, #t2)
+            table.insert(t1, i, s)
+        end
+    end
+end
+perm_t = {}
+perm(t, {}, perm_t)
+print(#perm_t)
