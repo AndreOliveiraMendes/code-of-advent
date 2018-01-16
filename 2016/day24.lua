@@ -130,13 +130,13 @@ for i, s in pairs(number) do
         table.insert(op, s.n)
     end
 end
-function getminpath(op, ch)
+function getminpath(op, ch, mode)
     local min
     if #op > 0 then
         for i, m in pairs(op) do
             table.remove(op, i)
             table.insert(ch, m)
-            local path = getminpath(op, ch)
+            local path = getminpath(op, ch, mode)
             if not min or path < min then
                 min = path
             end
@@ -144,13 +144,18 @@ function getminpath(op, ch)
             table.insert(op, i, m)
         end
     else
-        local path = 0
-        for i = 1, #ch - 1 do
-            path = path + dist[ch[i]][ch[i + 1]]
+        local path, lim = 0, #ch - 1
+        if mode then
+            lim = lim + 1
+        end
+        for i = 1, lim do
+            path = path + dist[ch[i]][ch[i%(#ch) + 1]]
         end
         return path
     end
     return min
 end
-calc = getminpath(op, {0})
+calc = getminpath(op, {0}, false)
 print("the min path is:\n" .. calc)
+calc = getminpath(op, {0}, true)
+print("the min path leaving robot at start is:\n" .. calc)
