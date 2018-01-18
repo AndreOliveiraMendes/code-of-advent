@@ -1,4 +1,15 @@
 --21
+input = [[swap position 4 with position 0
+swap letter d with letter b
+reverse positions 0 through 4
+rotate left 1 step
+move position 1 to position 4
+move position 3 to position 0
+rotate based on position of letter b]]
+operation = {}
+for line in input:gmatch("%C+") do
+    table.insert(operation, line)
+end
 function scrab(pass, line)
     if line:match("swap position %d+ with position %d+") then
         local p1, p2 = tonumber(line:match("swap position %d+"):match("%d+")) + 1, tonumber(line:match("with position %d+"):match("%d+")) + 1
@@ -20,7 +31,7 @@ function scrab(pass, line)
     elseif line:match("rotate based on position of letter %a+") then
         local s = line:match("letter %a+"):sub(8)
         local n = pass:find(s) - 1
-        if pass:find(s) > 4 then n = n + 1 end
+        if n >= 4 then n = n + 1 end
         n = n + 1
         for i = 1, n do
             pass = pass:sub(#pass) .. pass:sub(1, #pass - 1)
@@ -56,4 +67,11 @@ function perm(t1, t2, list)
 end
 perm_t = {}
 perm(t, {}, perm_t)
-print(#perm_t)
+for i, s in pairs(perm_t) do
+    s = table.concat(s)
+    local p = s
+    for _, s in pairs(operation) do
+        p = scrab(p, s)
+    end
+    print(i, s, p)
+end
