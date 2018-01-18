@@ -87,3 +87,20 @@ input = {{cpy, "a", "b"},
 {jnz, "c", -5}}
 varlist = {a = 7, b = 0, c = 0, d = 0}
 i = 1
+while (i > 0 and i <= #input) do
+    local f, p1, p2 = table.unpack(input[i])
+    if isf(f, inc, dec) then
+        f(p1, varlist)
+        i = i + 1
+    elseif isf(f, cpy) then
+        f(p1, p2, varlist)
+        i = i + 1
+    elseif isf(f, jnz) then
+        i = f(p1, p2, varlist, i)
+    elseif isf(f, tgl) then
+        f(p1, varlist, i, input)
+        i = i + 1
+    end
+end
+print("done")
+print(varlist.a, varlist.b, varlist.c, varlist.d)
