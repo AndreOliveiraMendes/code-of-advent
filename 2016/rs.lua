@@ -47,7 +47,7 @@ function scrab(pass, line)
         if p2 == 1 then
             pass = s .. pass:sub(1)
         else
-            pass = pass:sub(1, p2) .. s .. pass:sub(p2 + 1)
+            pass = pass:sub(1, p2 - 1) .. s .. pass:sub(p2)
         end
     end
     return pass
