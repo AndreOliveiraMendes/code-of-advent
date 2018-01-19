@@ -60,14 +60,6 @@ input = {{cpy, 1, "a"},
 {jnz, "d", -2},
 {dec, "c"},
 {jnz, "c", -5}}
---[[
-input = {{cpy, 41, "a"},
-{inc, "a"},
-{inc, "a"},
-{dec, "a"},
-{jnz, "a",2},
-{dec, "a"}}
---]]
 varlist = {a = 0, b = 0, c = 0, d = 0}
 i = 1
 while (i > 0 and i <= #input) do
