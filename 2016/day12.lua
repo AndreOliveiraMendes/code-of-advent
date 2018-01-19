@@ -84,7 +84,22 @@ while (i > 0 and i <= #input) do
 end
 print("register a contaim:" .. varlist.a)
 print(varlist.a, varlist.b, varlist.c, varlist.d)
---317825
+varlist = {a = 0, b = 0, c = 1, d = 0}
+i = 1
+while (i > 0 and i <= #input) do
+    local f, p1, p2 = table.unpack(input[i])
+    if isf(f, inc, dec) then
+        f(p1, varlist)
+        i = i + 1
+    elseif isf(f, cpy) then
+        f(p1, p2, varlist)
+        i = i + 1
+    elseif isf(f, jnz) then
+        i = f(p1, p2, varlist, i)
+    end
+end
+print("register a contaim:" .. varlist.a)
+print(varlist.a, varlist.b, varlist.c, varlist.d)
 --[[
     function equivalent
 --]]
