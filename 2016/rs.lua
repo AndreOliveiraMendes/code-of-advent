@@ -75,3 +75,90 @@ for i, s in pairs(perm_t) do
     end
     print(i, s, p)
 end
+--14
+local md5 = require 'md5'
+input = 'qzyelonm'
+i, key1, key2= 0, {}, {}
+function f(str)
+   for i = 1, #str - 2 do
+      if str:sub(i, i) == str:sub(i + 1, i + 1)
+         and str:sub(i + 1, i + 1) == str:sub(i + 2, i + 2) then
+            return true, str:sub(i, i)
+      end
+   end
+   return false
+end
+function g(str)
+   for i = 1, 2016 do
+      str = md5.sumhexa(str)
+   end
+   return str
+end
+queu1, queu2 = {}, {}
+while #key1 < 64 or #key2 < 64 do
+    print(i, #key1, #queu1, #key2, #queu2)
+    --get md5
+    local s1 = md5.sumhexa(input .. i)
+    --manages queu list
+    for _, p in pairs(queu1) do
+       if not p.ded then
+          if i > p.key + 1000 then
+             p.ded = true
+          else
+             if #s1 - #s1:gsub(string.rep(p.char, 5), "") > 0 then
+                p.ded = true
+                p.valid = true
+             end
+          end
+       end
+    end
+    --clean queu list also keys
+    while queu1[1] and queu1[1].ded do
+       if queu1[1].valid then
+          table.insert(key1, queu1[1].key)
+       end
+       table.remove(queu1, 1)
+    end
+    local pk, ch = f(s1)
+    if pk then
+       --print(i, s1)
+       table.insert(queu1, {char = ch, key = i})
+    end
+    --get md5
+    if #key2 < 64 then
+       local s2 = g(s1)
+       --manages queu
+       for _, p in pairs(queu2) do
+          if not p.ded then
+             if i > p.key + 1000 then
+                p.ded = true
+             else
+                if #s2 - #s2:gsub(string.rep(p.char, 5), "") > 0 then
+                   p.ded = true
+                   p.valid = true
+                end
+             end
+          end
+       end
+       --key process
+       while queu2[1] and queu2[1].ded do
+          if queu2[1].valid then
+             table.insert(key2, queu2[1].key)
+          end
+          table.remove(queu2, 1)
+       end
+       pk, ch = f(s2)
+       if pk then
+          --print(i, s2)
+          table.insert(queu2, {char = ch, key = i})
+       end
+    end
+    i = i + 1
+end
+print("----")
+for i, s in ipairs(key1) do
+   print("key1 " .. i .. " is " .. s)
+end
+for i, s in ipairs(key2) do
+   print("key2 " .. i .. " is " .. s)
+end
