@@ -95,36 +95,22 @@ print(varlist.a, varlist.b, varlist.c, varlist.d)
 --[[
     function equivalent
 --]]
-function main(a, b, c, d)
+function maineq(a, b, c, d)
 	a = 1
 	b = 1
 	d = 26
 	if c ~= 0 then
-		c = 7
-		repeat
-			d = d + 1
-			c = c - 1
-		until (c == 0)
+		d = d + 7
 	end
 	repeat
 		c = a
-		repeat
-			a = a + 1
-			b = b - 1
-		until (b == 0)
+		a = a + b
 		b = c
 		d = d - 1
 	until (d == 0)
-	c = 19
-	repeat
-		d = 14
-		repeat
-			a = a + 1
-			d = d - 1
-		until (d == 0)
-		c = c - 1
-	until (c == 0)
-	return a, b, c, d
+	c = 0
+	a = a + 266
+	return a, b, c, d    
 end
 print(main(0, 0, 0, 0))
 print(main(0, 0, 1, 0))
