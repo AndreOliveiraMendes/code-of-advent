@@ -1040,6 +1040,12 @@ for line in input:gmatch("%C+") do
                 avail = tonumber(d)
             end
         end
+        if not xm or x > xm then
+            xm = x
+        end
+        if not ym or y > ym then
+            ym = y
+        end
         local t = {x = x, y = y, size = size, used = used, avail = avail}
         table.insert(archives, t)
     end
@@ -1057,3 +1063,29 @@ for i, u in pairs(archives) do
     end
 end
 print("there are " .. viable .. " viable pairs")
+print("maxime value of x and y are respective " .. xm .. ", " .. ym)
+map = {}
+for i = 1, #archives do
+    local s = archives[i]
+    if not map[s.y] then map[s.y] = {} end
+    if s.x == xm and s.y == 0 then
+        map[s.y][s.x] = "G"
+    elseif s.used == 0 then
+        map[s.y][s.x] = "_"
+    else
+        map[s.y][s.x] = "."
+    end
+end
+mapstr = ""
+for y = 0, ym do
+    local str = ""
+    for x = 0, xm do
+        if map[y] and map[y][x] then
+            str = str .. map[y][x]
+        else
+            str = str .. "X"
+        end
+    end
+    mapstr = mapstr .. str .. "\n"
+end
+print(mapstr)
