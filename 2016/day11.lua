@@ -8,3 +8,33 @@
     2   TG, RG, RM, CG, CM  5   15
     1   SG, SM, PG, PM      4   5
 --]]
+floor = {{"SG", "SM", "PG", "PM"}, {"TG", "RG", "RM", "CG", "CM"}, {"TC"}, {}}
+function debug(floor)
+    for i, s in pairs(floor) do
+        print(i, table.unpack(s))
+    end
+end
+M = {}
+for i = 1, 4 do
+    M[i] = #floor[i]
+end
+s = 0
+for i = 1, 3 do
+    s = s + 2*M[i] - 3
+    M[i + 1], M[i] = M[i + 1] + M[i], 0
+end
+print("estimatited steps:" .. s)
+table.insert(floor[1], "EG")
+table.insert(floor[1], "EM")
+table.insert(floor[1], "DG")
+table.insert(floor[1], "DM")
+M = {}
+for i = 1, 4 do
+    M[i] = #floor[i]
+end
+s = 0
+for i = 1, 3 do
+    s = s + 2*M[i] - 3
+    M[i + 1], M[i] = M[i + 1] + M[i], 0
+end
+print("estimatited steps:" .. s)
