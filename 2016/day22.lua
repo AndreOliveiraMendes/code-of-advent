@@ -1068,24 +1068,72 @@ map = {}
 for i = 1, #archives do
     local s = archives[i]
     if not map[s.y] then map[s.y] = {} end
-    if s.x == xm and s.y == 0 then
-        map[s.y][s.x] = "G"
-    elseif s.used == 0 then
-        map[s.y][s.x] = "_"
-    else
-        map[s.y][s.x] = "."
-    end
+    map[s.y][s.x] = {used = s.used, size = s.size}
 end
-mapstr = ""
-for y = 0, ym do
-    local str = ""
-    for x = 0, xm do
-        if map[y] and map[y][x] then
-            str = str .. map[y][x]
-        else
-            str = str .. "X"
+function debug(a, b, c, d)
+    if a then
+        print(string.rep("-", 5*xm))
+        mapstr = ""
+        for y = 0, ym do
+            local str = ""
+            for x = 0, xm do
+                str = str .. "(" .. string.rep("0", 3 - #tostring(map[y][x].used)) .. map[y][x].used .. ")"
+            end
+            mapstr = mapstr .. str
+            if y < ym then
+                mapstr = mapstr .. "\n"
+            end
         end
+        print(mapstr)
     end
-    mapstr = mapstr .. str .. "\n"
+    if b then
+        print(string.rep("-", 5*xm))
+        mapstr = ""
+        for y = 0, ym do
+            local str = ""
+            for x = 0, xm do
+                str = str .. "(" .. string.rep("0", 3 - #tostring(map[y][x].size)) .. map[y][x].size .. ")"
+            end
+            mapstr = mapstr .. str
+            if y < ym then
+                mapstr = mapstr .. "\n"
+            end
+        end
+        print(mapstr)
+    end
+    if c then
+        print(string.rep("-", 5*xm))
+        mapstr = ""
+        for y = 0, ym do
+            local str = ""
+            for x = 0, xm do
+                str = str .. "(" .. string.rep("0", 3 - #tostring(map[y][x].size - map[y][x].used)) .. map[y][x].size - map[y][x].used .. ")"
+            end
+            mapstr = mapstr .. str
+            if y < ym then
+                mapstr = mapstr .. "\n"
+            end
+        end
+        print(mapstr)
+    end
+    if d then
+        print(string.rep("-", 5*xm))
+        mapstr = ""
+        for y = 0, ym do
+            local str = ""
+            for x = 0, xm do
+                str = str .. "(" .. string.rep("0", 3 - #tostring(math.ceil(100*map[y][x].used/map[y][x].size))) .. math.ceil(100*map[y][x].used/map[y][x].size) .. ")"
+            end
+            mapstr = mapstr .. str
+            if y < ym then
+                mapstr = mapstr .. "\n"
+            end
+        end
+        print(mapstr)
+    end        
 end
-print(mapstr)
+function d2(x, y, xr, yr)
+    return math.abs(x - xr) + math.abs(y - yr)
+end
+debug(true, false, false, true)
+--exprected answer 218
