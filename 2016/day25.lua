@@ -1,15 +1,6 @@
 function main(a, b, c, d, n)
     local outlist = {}
-	d = a
-	c = 7
-	repeat
-		b = 362
-		repeat
-			d = d + 1
-			b = b - 1
-		until b == 0
-		c = c - 1
-	until c == 0
+	d = a + 362*7
 	while true do
 		a = d
 		repeat
@@ -24,11 +15,7 @@ function main(a, b, c, d, n)
 					c = 2
 				end
 			end
-			b = 2
-			while c ~= 0 do
-				b = b - 1
-				c = c - 1
-			end
+			b = 2 - c
 			table.insert(outlist, b)
 			if #outlist >= n then return outlist end
 		until a == 0
@@ -139,3 +126,11 @@ end
 function system2(a, n)
     return main(a, 0, 0, 0, n)
 end
+--[[
+    t1 = os.clock()
+    print(table.unpack(system(0, 10)))
+    t2 = os.clock()
+    print(table.unpack(system2(0, 10)))
+    t3 = os.clock()
+    print(t3 - t2 .. "s", t2 - t1 .. "s")
+--]]
