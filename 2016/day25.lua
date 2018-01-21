@@ -1,3 +1,39 @@
+function main(a, b, c, d, n)
+    local outlist = {}
+	d = a
+	c = 7
+	repeat
+		b = 362
+		repeat
+			d = d + 1
+			b = b - 1
+		until b == 0
+		c = c - 1
+	until c == 0
+	while true do
+		a = d
+		repeat
+			b = a
+			a = 0
+			c = 2
+			while b ~= 0 do
+				b = b - 1
+				c = c - 1
+				if c == 0 then
+					a = a + 1
+					c = 2
+				end
+			end
+			b = 2
+			while c ~= 0 do
+				b = b - 1
+				c = c - 1
+			end
+			table.insert(outlist, b)
+			if #outlist >= n then return outlist end
+		until a == 0
+	end
+end
 function cpy(v, r, list)
     if type(v) == "number" then
         list[r] = v
@@ -75,28 +111,31 @@ input = {{cpy, "a", "d"},
     {jnz, "a", -19},
     {jnz, 1, -21}
 }
-varlist = {a = 3, b = 0, c = 0, d = 0}
-outlist = {}
-i = 1
-while (i > 0 and i <= #input) do
-    local f, p1, p2 = table.unpack(input[i])
-    if isf(f, inc, dec) then
-        f(p1, varlist)
-        i = i + 1
-    elseif isf(f, add) then
-        f(p1, p2, varlist)
-        i = i + 1
-    elseif isf(f, cpy) then
-        f(p1, p2, varlist)
-        i = i + 1
-    elseif isf(f, jnz) then
-        i = f(p1, p2, varlist, i)
-    elseif isf(f, out) then
-        f(p1, varlist, outlist)
-        i = i + 1
+function system(a, n)
+    local varlist = {a = a, b = 0, c = 0, d = 0}
+    local outlist = {}
+    local i = 1
+    while (i > 0 and i <= #input) do
+        local f, p1, p2 = table.unpack(input[i])
+        if isf(f, inc, dec) then
+            f(p1, varlist)
+            i = i + 1
+        elseif isf(f, add) then
+            f(p1, p2, varlist)
+            i = i + 1
+        elseif isf(f, cpy) then
+            f(p1, p2, varlist)
+            i = i + 1
+        elseif isf(f, jnz) then
+            i = f(p1, p2, varlist, i)
+        elseif isf(f, out) then
+            f(p1, varlist, outlist)
+            i = i + 1
+        end
+        if #outlist >= n then break end
     end
-    if #outlist > 5 then break end
+    return outlist
 end
-print("data")
-print(varlist.a, varlist.b, varlist.c, varlist.d)
-print(table.unpack(outlist))
+function system2(a, n)
+    return main(a, 0, 0, 0, n)
+end
