@@ -5,17 +5,7 @@ function main(a, b, c, d, n)
 		a = d
 		repeat
 			b = a
-			a = 0
-			c = 2
-			while b ~= 0 do
-				b = b - 1
-				c = c - 1
-				if c == 0 then
-					a = a + 1
-					c = 2
-				end
-			end
-			b = 2 - c
+			a, b= (b - b%2)/2, (b%2)|0
 			table.insert(outlist, b)
 			if #outlist >= n then return outlist end
 		until a == 0
