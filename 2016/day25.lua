@@ -116,11 +116,21 @@ end
 function system2(a, n)
     return main(a, 0, 0, 0, n)
 end
---[[
-    t1 = os.clock()
-    print(table.unpack(system(0, 10)))
-    t2 = os.clock()
-    print(table.unpack(system2(0, 10)))
-    t3 = os.clock()
-    print(t3 - t2 .. "s", t2 - t1 .. "s")
---]]
+function f(n, last)
+    local a, b= (n - n%2)/2, (n%2)|0
+    if not last then
+        return f(a, 1 - b)
+    else
+        if b ~= last then return false end
+        return (a == 0) or f(a, 1 - last)
+    end
+end
+a = 0
+while true do
+    if f(a + 362*7) then
+        break
+    end
+    a = a + 1
+end
+print("the min value for a is " .. a)
+print(table.unpack(system2(a, 10)))
