@@ -33,9 +33,24 @@ input = [[9 15 -14 10 13 15 10 -16 -5 2 8 7 -4 11 7 10 -9 15 -10 12 -5 6 7 -12 -
 15 17 3 -16 -16 19 -10 -7 -18 6 -17 10 -17 -1 5 -15 2 -6 -19 -8 15 -4 7 -13 -18 -7 8 8 3 24 
 -16 -15 6 -20 -8 -18 3 -7 14 5 18 -11 -6 -9 -14 -9 15 18 6 8 10 -2 -18 9 13 -16 7 -9 4 -18 
 -7 8 -20 -17 -16 -3 -15 9 16 14 8 17 120917]]
+list = {[0] = 1}
 f = 0
-for n in string.gmatch(input, "-?%d+") do
-    f = f + n
+function process()
+    for n in string.gmatch(input, "-?%d+") do
+        f = f + n
+        list[f] = list[f] and (list[f] + 1) or 1
+        if (list[f] == 2) and not f2 then
+            f2 = f
+        end
+    end
 end
 --part 1
+i = 0
+while not f2 do
+    process()
+    i = i + 1
+end
 print("f=" .. f)
+--part 2
+print("f2=" .. f2)
+print("process made " .. i .. " times")
