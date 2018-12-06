@@ -264,11 +264,45 @@ function analysy(str)
     return b1, b2
 end
 s1, s2 = 0, 0
+list = {}
 for word in string.gmatch(input, "%a+") do
     local b1, b2 = analysy(word)
     if b1 then s1 = s1 + 1 end
     if b2 then s2 = s2 + 1 end
+    table.insert(list, word)
 end
 --part 1
 s = s1*s2
 print("the checksum is " .. s)
+--part 2
+function getdiff(str1, str2)
+    local d = 0
+    for i = 1, #str1 do
+        if str1:sub(i,i) ~= str2:sub(i,i) then d = d + 1 end
+    end
+    return d
+end
+for i = 1, #list do
+    for j = i + 1, #list do
+        if not diff then
+            word1, word2 = list[i], list[j]
+            diff = getdiff(word1, word2)
+        else
+            local tdiff = getdiff(list[i], list[j])
+            if tdiff < diff then
+                word1, word2 = list[i], list[j]
+                diff = tdiff
+            end
+        end
+    end
+end
+print("first word is " .. word1)
+print("segond word is " .. word2)
+print("diff is " .. diff)
+pass = ""
+for i = 1, #word1 do
+    if word1:sub(i,i) == word2:sub(i,i) then
+        pass = pass .. word1:sub(i,i)
+    end
+end
+print("the common letters are " .. pass)
