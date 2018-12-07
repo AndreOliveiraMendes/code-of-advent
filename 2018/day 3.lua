@@ -1232,7 +1232,7 @@ for w in input:gmatch("#%d+ @ %d+,%d+: %d+x%d+") do
     i = 1
     for k in w:gmatch("%S+") do
         if i == 1 then
-            p.id = k:sub(2)
+            p.id = tonumber(k:sub(2))
         elseif i == 3 then
             local v = k:find(",")
             p.xo = tonumber(k:sub(1, v - 1))
@@ -1250,15 +1250,32 @@ for _, e in pairs(list) do
     for x = e.xo, e.xo + e.dx - 1 do
         if not factory[x] then factory[x] = {} end
         for y = e.yo, e.yo + e.dy - 1 do
-            factory[x][y] = factory[x][y] and (factory[x][y] + 1) or 1
+            if not factory[x][y] then factory[x][y] = {} end
+            factory[x][y].cl = factory[x][y].cl and (factory[x][y].cl + 1) or 1
+            if not factory[x][y].wc then factory[x][y].wc = {} end
+            table.insert(factory[x][y].wc, e.id)
         end
     end
 end
 count = 0
+wl = {}
 for x, f in pairs(factory) do
     for y, c in pairs(f) do
-        if c >= 2 then count = count + 1 end
+        if c.cl >= 2 then
+            count = count + 1
+            for _, id in pairs(c.wc) do
+                wl[id] = true
+            end
+        end
     end
 end
 --part 1
 print("count:" .. count)
+--part 2
+for i = 1, #list do
+    if not wl[i] then
+        gc = i
+        break
+    end
+end
+print("non conflicting is " .. gc)
