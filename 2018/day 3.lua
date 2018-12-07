@@ -1235,12 +1235,12 @@ for w in input:gmatch("#%d+ @ %d+,%d+: %d+x%d+") do
             p.id = k:sub(2)
         elseif i == 3 then
             local v = k:find(",")
-            p.xo = k:sub(1, v - 1)
-            p.yo = k:sub(v + 1, #k - 1)
+            p.xo = tonumber(k:sub(1, v - 1))
+            p.yo = tonumber(k:sub(v + 1, #k - 1))
         elseif i == 4 then
             local v = k:find("x")
-            p.dx = k:sub(1, v - 1)
-            p.dy = k:sub(v + 1)
+            p.dx = tonumber(k:sub(1, v - 1))
+            p.dy = tonumber(k:sub(v + 1))
         end
         i = i + 1
     end
