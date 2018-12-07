@@ -1251,9 +1251,8 @@ for _, e in pairs(list) do
         if not factory[x] then factory[x] = {} end
         for y = e.yo, e.yo + e.dy - 1 do
             if not factory[x][y] then factory[x][y] = {} end
-            factory[x][y].cl = factory[x][y].cl and (factory[x][y].cl + 1) or 1
-            if not factory[x][y].wc then factory[x][y].wc = {} end
-            table.insert(factory[x][y].wc, e.id)
+            if not factory[x][y].cl then factory[x][y].cl = {} end
+            table.insert(factory[x][y].cl, e.id)
         end
     end
 end
@@ -1261,9 +1260,9 @@ count = 0
 wl = {}
 for x, f in pairs(factory) do
     for y, c in pairs(f) do
-        if c.cl >= 2 then
+        if #c.cl >= 2 then
             count = count + 1
-            for _, id in pairs(c.wc) do
+            for _, id in pairs(c.cl) do
                 wl[id] = true
             end
         end
