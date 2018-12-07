@@ -1228,8 +1228,8 @@ input=[[#1 @ 265,241: 16x26
 list = {}
 factory = {}
 for w in input:gmatch("#%d+ @ %d+,%d+: %d+x%d+") do
-    p = {}
-    i = 1
+    local p = {}
+    local i = 1
     for k in w:gmatch("%S+") do
         if i == 1 then
             p.id = tonumber(k:sub(2))
