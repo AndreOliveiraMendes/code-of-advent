@@ -1,4 +1,21 @@
-input=[[[1518-04-12 00:36] falls asleep
+sample_input=[[[1518-11-01 00:00] Guard #10 begins shift
+[1518-11-01 00:05] falls asleep
+[1518-11-01 00:25] wakes up
+[1518-11-01 00:30] falls asleep
+[1518-11-01 00:55] wakes up
+[1518-11-01 23:58] Guard #99 begins shift
+[1518-11-02 00:40] falls asleep
+[1518-11-02 00:50] wakes up
+[1518-11-03 00:05] Guard #10 begins shift
+[1518-11-03 00:24] falls asleep
+[1518-11-03 00:29] wakes up
+[1518-11-04 00:02] Guard #99 begins shift
+[1518-11-04 00:36] falls asleep
+[1518-11-04 00:46] wakes up
+[1518-11-05 00:03] Guard #99 begins shift
+[1518-11-05 00:45] falls asleep
+[1518-11-05 00:55] wakes up]]
+input = [[[1518-04-12 00:36] falls asleep
 [1518-02-22 00:58] wakes up
 [1518-10-17 00:01] wakes up
 [1518-07-19 00:03] falls asleep
@@ -1125,6 +1142,7 @@ input=[[[1518-04-12 00:36] falls asleep
 [1518-11-05 00:04] Guard #1877 begins shift
 [1518-10-26 00:43] falls asleep
 [1518-09-03 00:30] wakes up]]
+--input = sample_input
 list = {}
 for word in string.gmatch(input, "%C+") do
     local element = {}
@@ -1156,5 +1174,78 @@ function esort(e1, e2)
     end
 end
 table.sort(list, esort)
---151754
---19896
+glist={}
+function diff(t1, t2)
+    local dyear = t2.year - t1.year
+    local dmonth = t2.month - t1.month
+    local dday = t2.day - t1.day
+    local dhour = t2.hour - t1.hour
+    local dminute = t2.minute - t1.minute
+    return 60*(24*(365*dyear + 30*dmonth + dday) + dhour) + dminute
+end
+function updatechart(list, t1, t2)
+    local t = {}
+    t.year = t1.year
+    t.month = t1.month
+    t.day = t1.day
+    t.hour = t1.hour
+    t.minute = t1.minute
+    while diff(t, t2) ~= 0 do
+        list[t.minute] = list[t.minute] + 1
+        increaseminute(t, 1)
+    end
+end
+function increaseminute(t, m)
+    t.minute = t.minute + m
+    if t.minute >= 60 then
+        t.hour = t.hour + t.minute//60
+        t.minute = t.minute%60
+    end
+    if t.hour >= 24 then
+        t.day = t.day + t.hour // 24
+        t.hour = t.hour%24
+    end
+    if t.day >= 30 then
+        t.month = t.month + t.day // 30
+        t.day = t.day%30
+    end
+end
+function equaltime(t1, t2)
+    return diff(t1, t2) == 0
+end
+for _, e in pairs(list) do
+    --print(e.year, e.month, e.day, e.hour .. ":" .. e.minute, e.action)
+    if guard and not glist[guard] then
+        glist[guard] = {}
+        glist[guard].sleep = 0
+        glist[guard].sleepchart = {}
+        for i = 0, 59 do
+            glist[guard].sleepchart[i] = 0
+        end
+    end
+    if e.action == "falls asleep" then
+        start_time = {["minute"] = e.minute, ["hour"] = e.hour, ["day"] = e.day, ["month"] = e.month, ["year"] = e.year}
+    elseif e.action == "wakes up" then
+        end_time = {["minute"] = e.minute, ["hour"] = e.hour, ["day"] = e.day, ["month"] = e.month, ["year"] = e.year}
+        glist[guard].sleep = glist[guard].sleep + diff(start_time, end_time)
+        updatechart(glist[guard].sleepchart, start_time, end_time)
+    else
+        guard = tonumber(e.action:match("%d+"))
+    end
+end
+for i, e in pairs(glist) do
+    if not maxsleep or e.sleep > maxsleep then
+        maxsleep = e.sleep
+        gsleep = i
+    end
+end
+sc = glist[gsleep].sleepchart
+for i = 0, 59 do
+    if not msm or sc[i] > msm then
+        msm = sc[i]
+        msminute = i
+    end
+end
+--day 1
+print(gsleep, maxsleep, msminute)
+print("answer:" .. gsleep*msminute)
