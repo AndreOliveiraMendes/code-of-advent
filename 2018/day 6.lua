@@ -106,3 +106,19 @@ for p, a in pairs(area) do
 end
 --part 1
 print("maxime finite area is " .. md)
+--part 2
+k = 10000
+inc = math.floor(k/#list)
+count = 0
+for x = xmin - inc, xmax + inc do
+    for y = ymin - inc, ymax + inc do
+        local d = 0
+        for _, p in pairs(list) do
+            d = d + dist(p, x, y)
+        end
+        if d < k then
+            count = count + 1
+        end
+    end
+end
+print("the total area is " .. count)
