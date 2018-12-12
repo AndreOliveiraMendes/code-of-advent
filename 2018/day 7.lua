@@ -154,3 +154,53 @@ while check(list, dlist) do
 end
 --step 1
 print("answer 1:" .. str)
+--step 2
+tlist = {}
+for i in pairs(dlist) do
+    dlist[i] = false
+    tlist[i] = false
+end
+local t = 0
+w1, w2, w3, w4, w5 = {}, {}, {}, {}, {}
+team = {w1, w2, w3, w4, w5}
+for _, w in ipairs(team) do
+    w.q = {}
+    w.t = 0
+end
+function value(l)
+    return l:byte() - string.byte("A") + 1 + 60
+end
+function solve2(l1, l2, l3, l4, w)
+    --solve pendents queues
+    if #w.q ~= 0 then
+        local l = w.q[1]
+        w.t = w.t + 1
+        if w.t == value(l) then
+            l2[l] = true
+            table.remove(w.q, 1)
+            w.t = 0
+        end
+    end
+    --do more queues if possible
+    if #w.q == 0 then
+        for _, l in ipairs(l1) do
+            if not l2[l] and not l3[l] and (not l4[l] or not check(l4[l], l2)) then
+                l3[l] = true
+                table.insert(w.q, l)
+                break
+            end
+        end
+    end
+end
+while true do
+    --solve
+    for _, w in ipairs(team) do
+        solve2(list, dlist, tlist, req, w)
+    end
+    --break if done
+    if not check(list, dlist) then
+        break
+    end
+    t = t + 1
+end
+print("answer 2:" .. t)
