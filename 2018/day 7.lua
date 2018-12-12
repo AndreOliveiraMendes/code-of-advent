@@ -203,4 +203,4 @@ while true do
     end
     t = t + 1
 end
-print("answer 2:" .. t)
+print("answer 2:" .. t - 1)
