@@ -9,15 +9,18 @@ function makehead(list, data)
     local c, d = list[i], list[i + 1]
     p.hc, p.hd = c, d
     p.data = {}
+    p.child = {}
     i = i + 2
     for j = 1, c do
-        makehead(list, data)
+        local q = makehead(list, data)
+        table.insert(p.child, q)
     end
     for j = 1, d do
         table.insert(p.data, list[i])
         i = i + 1
     end
     table.insert(data, p)
+    return p
 end
 i = 1
 makehead(list, data)
@@ -27,4 +30,21 @@ for i, e in pairs(data) do
         sum = sum + s
     end
 end
-print("sum is " .. sum)
+print("answer 1:" .. sum)
+function getsum(data)
+    local sum = 0
+    if data.hc == 0 then
+        for _, s in pairs(data.data) do
+            sum = sum + s
+        end
+    else
+        for _, s in pairs(data.data) do
+            if data.child[s] then
+                sum = sum + getsum(data.child[s])
+            end
+        end
+    end
+    return sum
+end
+sum = getsum(data[#data])
+print("answer 2:" .. sum)
