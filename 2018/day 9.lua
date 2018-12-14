@@ -1,6 +1,6 @@
-players = 10
+players = 430
 ml = {}
-fm = 1618
+fm = 71588
 score = {}
 for p = 1, players do score[p] = 0 end
 function tc(t, i)
@@ -34,7 +34,7 @@ for m = 0, fm do
             score[p] = score[p] + ml[i]
             table.remove(ml, i)
         else
-            i = inc(i, m - 1, #ml)
+            i = inc(i, -1, #ml)
             table.insert(ml, i + 1, m)
             i = i + 1
         end
@@ -42,9 +42,9 @@ for m = 0, fm do
     end
     --print(tc(ml, i))
 end
+max = 0
 for _, s in pairs(score) do
-    if not max or s > max then
-        max = s
-    end
+    max = math.max(max, s)
 end
---print("max score is " .. max)
+--part I
+print("max score is " .. max)
