@@ -1,50 +1,80 @@
 players = 430
-ml = {}
 fm = 71588
 score = {}
-for p = 1, players do score[p] = 0 end
-function tc(t, i)
+for p = 1, players do
+    score[p] = 0
+end
+debug = false
+function lprint(root)
     local str = ""
-    for j = 1, #t do
-        if j > 1 then str = str .. "-" end
-        if j == i then
-            str = str .. "(" .. t[j] .. ")"
-        else
-            str = str .. t[j]
+    if root then
+        str = str .. root.value
+        next = root.next
+        while next do
+            str = str .. " " .. next.value
+            next = next.next
         end
+    else
+        str = str .. "no linked list"
     end
-    return str
+    print(current.value, str)
 end
-function inc(i, rot, n)
-    rot = rot%n
-    i = i - rot
-    if i < 1 then i = i + n end
-    if i > n then i = i - n end
-    return i
-end
-for m = 0, fm do
+for m = 0, 100*fm do
     if m == 0 then
-        table.insert(ml, m)
-        i = 1
-        p = 1
+        previous, current, next = nil, {}, nil
+        current.value = m
+        root = current
+        player = 1
     else
         if m%23 == 0 then
-            score[p] = score[p] + m
-            i = inc(i, 7, #ml)
-            score[p] = score[p] + ml[i]
-            table.remove(ml, i)
+            for i = 1, 7 do
+                if not current.previous then
+                    while current.next do
+                        previous, current, next = current, current.next, current.next.next
+                    end
+                else
+                    previous, current, next = current.previous.previous , current.previous, current
+                end
+            end
+            score[player] = score[player] + current.value + m
+            if previous then
+                previous.next = next
+            end
+            current = next
+            if next then
+                next.previous = previous
+            end
         else
-            i = inc(i, -1, #ml)
-            table.insert(ml, i + 1, m)
-            i = i + 1
+            for i = 1, 1 do
+                if not current.next then
+                    previous, current, next = nil, root, root.next
+                else
+                    previous, current, next = current, current.next, current.next.next
+                end
+            end
+            local p = {}
+            p.value = m
+            previous, current = current, p
+            previous.next = p
+            p.previous = previous
+            if next then
+                p.next = next
+                next.previous = p
+            end
         end
-        p = inc(p, -1, players)
+        player = (player + 1 > players) and 1 or (player + 1)
     end
-    --print(tc(ml, i))
+    if debug then lprint(root) end
+    if m == fm then
+        max = 0
+        for i, s in pairs(score) do
+            max = math.max(max, s)
+        end
+        print("max value for " .. fm .. " marbles is " .. max)
+    end
 end
 max = 0
-for _, s in pairs(score) do
+for i, s in pairs(score) do
     max = math.max(max, s)
 end
---part I
-print("max score is " .. max)
+print("max value for " .. 100*fm .. " is " .. max)
