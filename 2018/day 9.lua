@@ -40,7 +40,7 @@ for m = 0, 100*fm do
             if previous then
                 previous.next = next
             else
-                root = current
+                root = next
             end
             current = next
             if next then
