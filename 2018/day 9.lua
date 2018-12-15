@@ -39,6 +39,8 @@ for m = 0, 100*fm do
             score[player] = score[player] + current.value + m
             if previous then
                 previous.next = next
+            else
+                root = current
             end
             current = next
             if next then
