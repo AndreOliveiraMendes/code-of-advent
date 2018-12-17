@@ -362,39 +362,25 @@ end
 function getdata(grid, t)
 	local min_x, max_x, min_y, max_y
 	for _, p in pairs(list) do
-        if not min_x or p.x(t) < min_x then min_x = p.x(t) end
-        if not min_y or p.y(t) < min_y then min_y = p.y(t) end
-        if not max_x or p.x(t) > max_x then max_x = p.x(t) end
-        if not max_y or p.y(t) > max_y then max_y = p.y(t) end
-        if not grid[p.x(t)] then grid[p.x(t)] = {} end
-        grid[p.x(t)][p.y(t)] = "#"
-    end
+		if not min_x or p.x(t) < min_x then min_x = p.x(t) end
+		if not min_y or p.y(t) < min_y then min_y = p.y(t) end
+		if not max_x or p.x(t) > max_x then max_x = p.x(t) end
+		if not max_y or p.y(t) > max_y then max_y = p.y(t) end
+		if not grid[p.x(t)] then grid[p.x(t)] = {} end
+		grid[p.x(t)][p.y(t)] = "#"
+    	end
 	return min_x, max_x, min_y, max_y
 end
-for t = 0, 20000 do
+repeat
+	t = t and (t + 1) or 0
+	if area then previous_area = area end
 	local grid = {}
-    local min_x, max_x, min_y, max_y = getdata(grid, t)
+    	local min_x, max_x, min_y, max_y = getdata(grid, t)
 	local dx = math.abs(max_x - min_x)
 	local dy = math.abs(max_y - min_y)
-    local area = dx*dy
-    if not minimal_area or area < minimal_area then
-        minimal_area = area
-        t_start1 = t
-    end
-	if not minimal_dx or dx < minimal_dx then
-		minimal_dx = dx
-		t_start2 = t
-	end
-	if not minimal_dy or dy < minimal_dy then
-		minimal_dy = dy
-		t_start3 = t
-	end
-end
-print("minimal area of " .. minimal_area .. " found at time of " .. t_start1 .. " s")
-print("minimal dx of " .. minimal_dx .. " found at time of " .. t_start2 .. " s")
-print("minimal dy of " .. minimal_dy .. " found at time of " .. t_start2 .. " s")
-for t = math.min(t_start1, t_start2, t_start3), math.max(t_start1, t_start2, t_start3) do
-	grid = {}
-	min_x, max_x, min_y, max_y = getdata(grid, t)
-	map(grid, min_x, max_x, min_y, max_y, t)
-end
+    	area = dx*dy
+until (previous_area and area>previous_area)
+t = t - 1
+grid = {}
+min_x, max_x, min_y, max_y = getdata(grid, t)
+map(grid, min_x, max_x, min_y, max_y, t)
