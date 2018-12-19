@@ -67,20 +67,36 @@ function conv(...)
 end
 function transf(m)
 	local fm = {}
-	for x = m.x1 - 5, m.x2 + 5 do
+	for x = m.x1 - 4, m.x2 + 4 do
 		for y = x - 2, x + 2 do
 			if not m[y] then m[y] = 0 end
 		end
 		fm[x] = conv(m[x - 2], m[x - 1], m[x], m[x + 1], m[x + 2])
-		if x < m.x1 and fm[x] == 1 then fm.x1 = x - 5 end
-		if x > m.x2 and fm[x] == 1 then fm.x2 = x + 5 end
+		if x < m.x1 and fm[x] == 1 then fm.x1 = x end
+		if x > m.x2 and fm[x] == 1 then fm.x2 = x end
 	end
 	if not fm.x1 then fm.x1 = m.x1 end
 	if not fm.x2 then fm.x2 = m.x2 end
 	return fm
 end
+function gprint(m)
+    local str = ""
+    for x = m.x1, m.x2 do
+        if x == 0 then
+            str = str .. "("
+        end
+        str = str .. (m[x] == 1 and "#" or ".")
+        if x == 0 then
+            str = str .. ")"
+        end
+    end
+    return str
+end
+debug = true
+if debug then print(0, gprint(sm)) end
 for i = 1, 20 do
 	sm = transf(sm)
+	if debug then print(i, gprint(sm)) end
 end
 sum = 0
 for x = sm.x1, sm.x2 do
