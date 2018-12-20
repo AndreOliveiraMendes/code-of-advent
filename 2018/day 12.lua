@@ -110,4 +110,68 @@ for i = 1, 20 do
 	if debug then print(i, fm.x1, gprint(fm)) end
 end
 sum = getsum(fm)
-print("sum = " .. sum)
+--part i
+print("sum for 20 generations = " .. sum)
+--part ii
+fm = nil
+function gettrace(sm)
+	local str = ""
+	for x = sm.x1, sm.x2 do
+		str = str .. (sm[x] == 1 and "#" or ".")
+	end
+	return str
+end
+function comp(t, i)
+	local ach, n = false
+	for j = 0, i - 1 do
+		if t[i] == t[j] then
+			ach = true
+			n = j
+			break
+		end
+	end
+	return ach, n
+end
+t = {}
+t.traces = {}
+t.traces[0] = gettrace(sm)
+t.si = {}
+t.si[0] = sm.x1
+for i = 1, 100 do
+	if not fm then
+		fm = transf(sm)
+	else
+		fm = transf(fm)
+	end
+	t.traces[i] = gettrace(fm)
+	t.si[i] = fm.x1
+	local r, index = comp(t.traces, i)
+	if r then
+		pd = true
+		pindex = index
+		break
+	end
+end
+k = 50000000000
+if pd then
+	if #t.traces - pindex == 1 then
+		diff = t.si[#t.traces] - t.si[#t.traces - 1]
+		start = t.si[#t.traces] + (k - #t.traces)*diff
+		local sum = 0
+		local str = t.traces[#t.traces]
+		local ind
+		for i = 1, #str do
+			if not ind then
+				ind = start
+			else
+				ind = ind + 1
+			end
+			if str:sub(i, i) == "#" then
+				sum = sum + ind
+			end
+		end
+		print("sum for " .. k .. " generations = " .. sum)
+	else
+		--unclear what to do
+	end
+end
