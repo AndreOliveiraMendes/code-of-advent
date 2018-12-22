@@ -13,7 +13,7 @@ function map_print()
 		for x = x1, x2 do
 			local player_zone, player_direction = false
 			for _, p in ipairs(player_list) do
-				if p.x == x and p.y == y then
+				if p.x == x and p.y == y and not p.colision then
 					player_zone, player_direction = true, {x = p.dx, y = p.dy}
 					break
 				end
@@ -168,10 +168,12 @@ if map then
 		end
 		table.sort(player_list, player_sort)
 		for _, p in ipairs(player_list) do
-			update_player(p)
-			local colision, x, y = check_colision(p)
-			if colision and not crash_x then
-				crash_x, crash_y = x, y
+			if not p.colision then
+				update_player(p)
+				local colision, x, y = check_colision(p)
+				if colision and not crash_x then
+					crash_x, crash_y = x, y
+				end
 			end
 		end
 		if debug then
