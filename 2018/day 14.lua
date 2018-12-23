@@ -19,15 +19,6 @@ while #scores < input + 10 do
 end
 print("answer 1:" .. table.concat(scores, "", input + 1, input + 10)) --part i
 scores, elf_1, elf_2 = {3, 7}, 1, 2
-function comp(scores, n)
-	local cstr = tostring(n)
-	local dstr = table.concat(scores, " ")
-	if #scores < #cstr then return false end
-	for i = 1, #scores - #cstr + 1 do
-		if dstr:sub(i, i + #cstr) == cstr then return true end
-	end
-	return false
-end
 v, ach, ref = "37", false, tostring(input)
 while true do
 	local s = scores[elf_1] + scores[elf_2]
@@ -38,9 +29,7 @@ while true do
 		else
 			v = v:sub(2) .. tostring(s//10)
 		end
-		if v == ref then
-			ach = true
-		end
+		ach = (v == ref) or ach
 	end
 	table.insert(scores, s%10)
 	if #v < #ref then
@@ -48,9 +37,7 @@ while true do
 	else
 		v = v:sub(2) .. tostring(s%10)
 	end
-	if v == ref then
-		ach = true
-	end
+	ach = (v == ref) or ach
 	elf_1, elf_2 = move(elf_1, scores), move(elf_2, scores)
 	if ach then break end
 end
