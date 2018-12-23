@@ -48,9 +48,10 @@ end
 i = 0
 while not f2 do
     process()
+    if not f1 then f1 = f end
     i = i + 1
 end
-print("f=" .. f)
+print("f1=" .. f1)
 --part 2
 print("f2=" .. f2)
 print("process made " .. i .. " times")
