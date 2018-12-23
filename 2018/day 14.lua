@@ -1,8 +1,7 @@
 input = 681901
 scores, elf_1, elf_2 = {3, 7}, 1, 2
 function move(i, scores)
-	local r = scores[i] + 1
-	r = r%#scores
+	local r = (scores[i] + 1)%#scores
 	i = i + r
 	while (i > #scores) or (i < 1) do
 		i = (i > #scores) and (i - #scores) or (i + #scores)
