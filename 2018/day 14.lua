@@ -24,19 +24,11 @@ while true do
 	local s = scores[elf_1] + scores[elf_2]
 	if s >= 10 then
 		table.insert(scores, s//10)
-		if #v < #ref then
-			v = v .. tostring(s//10)
-		else
-			v = v:sub(2) .. tostring(s//10)
-		end
+		v = (#v < #ref and v or v:sub(2)) .. tostring(s//10)
 		ach = (v == ref) or ach
 	end
 	table.insert(scores, s%10)
-	if #v < #ref then
-		v = v .. tostring(s%10)
-	else
-		v = v:sub(2) .. tostring(s%10)
-	end
+	v = (#v < #ref and v or v:sub(2)) .. tostring(s%10)
 	ach = (v == ref) or ach
 	elf_1, elf_2 = move(elf_1, scores), move(elf_2, scores)
 	if ach then break end
