@@ -18,8 +18,14 @@ while #scores < input + 10 do
 end
 print("answer 1:" .. table.concat(scores, "", input + 1, input + 10)) --part i
 scores, elf_1, elf_2 = {3, 7}, 1, 2
-v, ach, ref = "37", false, tostring(input)
+v, ach, ref = "", false, tostring(input)
 while true do
+	if v == "" then
+		v = (#v < #ref and v or v:sub(2)) .. "3"
+		ach = (v == ref) or ach
+		v = (#v < #ref and v or v:sub(2)) .. "7"
+		ach = (v == ref) or ach
+	end
 	local s = scores[elf_1] + scores[elf_2]
 	if s >= 10 then
 		table.insert(scores, s//10)
