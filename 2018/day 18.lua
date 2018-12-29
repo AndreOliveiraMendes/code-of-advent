@@ -84,10 +84,48 @@ if io.open([[\Users\ao_me\Desktop\advent of code\input_18.txt]], "r") then
 		end
 	end
 end
+function equal_map(map1, map2)
+	for y = y1, y2 do
+		for x = x1, x2 do
+			if map1[x][y] ~= map2[x][y] then
+				return false
+			end
+		end
+	end
+	return true
+end
+function check(l, map)
+	for i, m in pairs(l) do
+		if i < #l and equal_map(m, map) then
+			return true, i
+		end
+	end
+	return false
+end
 if map then
 	f_map = nil
 	for t = 1, 10 do
 		f_map = f_map and advance(f_map) or advance(map)
 	end
 	print("answer = " .. resource_value(f_map))
+	f_map, list = nil, {map}
+	while true do
+		f_map = f_map and advance(f_map) or advance(map)
+		table.insert(list, f_map)
+		local chk, st = check(list, f_map)
+		if chk then
+			start = st
+			break
+		end
+	end
+	k = 1000000000
+	local mod = #list - start
+	local r1, r2 = start%mod, k%mod
+	if r1 == r2 then
+		print("(r1 = r2) answer = " .. resource_value(list[start]))
+	elseif r1 < r2 then
+		print("(r1 < r2) answer = " .. resource_value(list[start + r2 - r1 + 1]))
+	elseif r1 > r2 then
+		print("(r1 > r2) answer = " .. resource_value(list[start + r2 - r1 + mod + 1]))
+	end
 end
