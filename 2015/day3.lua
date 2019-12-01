@@ -8,20 +8,23 @@ function update_count(mcity, x, y)
         return 0
     end
 end
+function move(str, x, y)
+    if str == "^" then
+        return x, y + 1
+    elseif str == ">" then
+        return x + 1, y
+    elseif str == "<" then
+        return x - 1, y
+    else
+        return x, y - 1
+    end
+end
 input = io.read()
 x, y, count = 0, 0, 1
 mcity = {[0] = {[0] = 1}}
 for i = 1, #input do
     local str = string.sub(input, i, i)
-    if str == "^" then
-        y = y + 1
-    elseif str == ">" then
-        x = x + 1
-    elseif str == "<" then
-        x = x - 1
-    else
-        y = y - 1
-    end
+    x, y = move(str, x, y)
     count = count + update_count(mcity, x, y)
 end
 --part I
@@ -30,34 +33,11 @@ x, y, xr, yr, count = 0, 0, 0, 0, 1
 mcity = {[0] = {[0] = 1}}
 for i = 1, #input do
     local str = string.sub(input, i, i)
-    if str == "^" then
-        if i%2 == 1 then
-            y = y + 1
-        else
-            yr = yr + 1
-        end
-    elseif str == ">" then
-        if i%2 == 1 then
-            x = x + 1
-        else
-            xr = xr + 1
-        end
-    elseif str == "<" then
-        if i%2 == 1 then
-            x = x - 1
-        else
-            xr = xr - 1
-        end
-    else
-        if i%2 == 1 then
-            y = y - 1
-        else
-            yr = yr - 1
-        end
-    end
     if i%2 == 1 then
+        x, y = move(str, x, y)
         count = count + update_count(mcity, x, y)
     else
+        xr, yr = move(str, xr, yr)
         count = count + update_count(mcity, xr, yr)
     end
 end
