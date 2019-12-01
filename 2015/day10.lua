@@ -1,8 +1,9 @@
-input = {1, 3, 2, 1, 1, 3, 1, 1, 1, 2}
-t = input
-print("(" .. 0 .. ")", #t)
+input = io.read()
+t = {}
+for i in #input do
+    table.insert(t, tonumber(input:sub(i, i)))
+end
 for i = 1, 50 do
-    ti = os.time()
     local ta = {}
     local x = 1
     for j = 1, #t do
@@ -16,16 +17,9 @@ for i = 1, 50 do
         end
     end
     t = ta
-    to = os.time()
-    print("(" .. i .. ")", #t, to - ti .. "s")
+    if i == 40 then --part I
+        print(#t)
+    end
 end
---[[
-    part I
-    492982
-    1s on step 40
-    5s on total
-    part II
-    6989950
-    14s on step 50
-    63s on total
---]]
+--part II
+print(#t)
