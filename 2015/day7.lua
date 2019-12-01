@@ -88,7 +88,7 @@ repeat
     else
         i = i + 1
     end
-until (#inst == 0)
+until (#inst == 0 or i > #inst)
 --part I
 print("after interaction, the signal on wire a is " .. (varlist.a and varlist.a or 0))
 varlist.b = varlist.a
@@ -114,6 +114,6 @@ repeat
     else
         i = i + 1
     end
-until (#inst2 == 0)
+until (#inst2 == 0 or i > #inst2)
 --part II
 print("after interaction, the signal on wire a is " .. (varlist.a and varlist.a or 0))
