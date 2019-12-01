@@ -23,19 +23,17 @@ function getmind(loc, distl, used)
     local min, max
     if #loc ~= 0 then
         for i, s in ipairs(loc) do
-            local aux = {}
-            for j, q in pairs(loc) do
-                if q ~= s then table.insert(aux, q) end
-            end
+            table.remove(loc, i)
             table.insert(used, s)
-            local dist, distaux = getmind(aux, dist, used)
+            local dist, distaux = getmind(loc, dist, used)
             if not min or dist < min then min = dist end
             if not distaux then
                 if not max or dist > max then max = dist end
             else
                 if not max or distaux > max then max = distaux end
             end
-            table.remove(used, #used)
+            table.remove(used)
+            table.insert(loc, i, s)
         end
     else
         local dist = 0
