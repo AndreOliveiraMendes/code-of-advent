@@ -1,4 +1,4 @@
-input = "cqjxjnds"
+input = io.read()
 str = input
 function update(s)
 	local	function fsub(...)
