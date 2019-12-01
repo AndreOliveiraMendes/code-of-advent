@@ -13,4 +13,5 @@ for i = 1, #input do
 end
 --part I
 print("the input lead to floor " .. floor)
+--part II
 print("entered basment first time at " .. basement)
