@@ -1,6 +1,6 @@
 words = {}
 while true do
-    word = io.read()
+    local word = io.read()
     if not word then break end
     table.insert(words, word)
 end
