@@ -11,7 +11,7 @@ function instruction_insert(inst, input)
     table.insert(inst, t)
 end
 while true do
-    input = io.read()
+    local input = io.read()
     if not input then break end
     instruction_insert(inst, input)
     instruction_insert(inst2, input)
