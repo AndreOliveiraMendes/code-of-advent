@@ -2,6 +2,7 @@ function table_nrinsert(t, v)
     for i, s in pairs(t) do
         if s == v then return false end
     end
+    table.insert(t, v)
     return true
 end
 loc = {}
@@ -46,7 +47,6 @@ function getmind(loc, distl, used)
 end
 --part I
 min, max = getmind(loc, dist, {})
-print("the minimal distance is " .. min)
+print("the minimal distance is " .. tostring(min))
 --part II
-print("the maxime distance is " .. max)
---251, 314, 867, 898
+print("the maxime distance is " .. tostring(max))
