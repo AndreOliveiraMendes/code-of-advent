@@ -2,50 +2,6 @@
 function replace_char(pos1, pos2, str, r)
     return str:sub(1, pos1-1) .. r .. str:sub(pos2+1)
 end
-input = [[Al => ThF
-Al => ThRnFAr
-B => BCa
-B => TiB
-B => TiRnFAr
-Ca => CaCa
-Ca => PB
-Ca => PRnFAr
-Ca => SiRnFYFAr
-Ca => SiRnMgAr
-Ca => SiTh
-F => CaF
-F => PMg
-F => SiAl
-H => CRnAlAr
-H => CRnFYFYFAr
-H => CRnFYMgAr
-H => CRnMgYFAr
-H => HCa
-H => NRnFYFAr
-H => NRnMgAr
-H => NTh
-H => OB
-H => ORnFAr
-Mg => BF
-Mg => TiMg
-N => CRnFAr
-N => HSi
-O => CRnFYFAr
-O => CRnMgAr
-O => HP
-O => NRnFAr
-O => OTi
-P => CaP
-P => PTi
-P => SiRnFAr
-Si => CaSi
-Th => ThCa
-Ti => BP
-Ti => TiTi
-e => HF
-e => NAl
-e => OMg]]
-input_element = "CRnCaSiRnBSiRnFArTiBPTiTiBFArPBCaSiThSiRnTiBPBPMgArCaSiRnTiMgArCaSiThCaSiRnFArRnSiRnFArTiTiBFArCaCaSiRnSiThCaCaSiRnMgArFYSiRnFYCaFArSiThCaSiThPBPTiMgArCaPRnSiAlArPBCaCaSiRnFYSiThCaRnFArArCaCaSiRnPBSiRnFArMgYCaCaCaCaSiThCaCaSiAlArCaCaSiRnPBSiAlArBCaCaCaCaSiThCaPBSiThPBPBCaSiRnFYFArSiThCaSiRnFArBCaCaSiRnFYFArSiThCaPBSiThCaSiRnPMgArRnFArPTiBCaPRnFArCaCaCaCaSiRnCaCaSiRnFYFArFArBCaSiThFArThSiThSiRnTiRnPMgArFArCaSiThCaPBCaSiRnBFArCaCaPRnCaCaPMgArSiRnFYFArCaSiThRnPBPMgAr"
 function tinsertr(t, value)
     local chk = true
     for i, s in pairs(t) do
@@ -56,17 +12,22 @@ function tinsertr(t, value)
     end
     if chk then table.insert(t, value) end
 end
-temp = {}
-for word in string.gmatch(input, "%a+") do
-    table.insert(temp, word)
-end
 elemental_replace = {}
 elements = {}
-for i = 1, #temp, 2 do
-    tinsertr(elements, temp[i])
-    table.insert(elemental_replace, {temp[i], temp[i + 1]})
+for lines in io.lines() do
+    if line.matches("=>") then
+        local t = {}
+        for n in line.gmatch("%a+") do
+            table.insert(t, tonumber(n))
+        end
+        local e1, e2 = t[1], t[2]
+        tinsertr(elements, e1)
+        tinsertr(elements, e2)
+        table.insert(elemental_replace, {e1, e2})
+    elseif line.matches("%a") then
+        input_element = line
+    end
 end
-temp = nil
 distincts_mol = {}
 function replace(distincts_mol, input_element)
     for i, s in pairs(elemental_replace) do
@@ -105,22 +66,3 @@ for i, s in pairs(elements_count) do
 end
 print("total", count)
 print("estimative:" .. count - elements_count["Rn"] - elements_count["Ar"] - 2*elements_count["Y"] - 1)
---[[
-    Al => ThF, ThRnFAr
-    B => BCa, TiB, TiRnFAr
-    Ca => CaCa, PB, PRnFAr, SiRnFYFAr, SiRnMgAr, SiTh
-    F => CaF, PMg, SiAl
-    H => CRnAlAr, CRnFYFYFAr, CRnFYMgAr, CRnMgYFAr, HCa, NRnFYFAr, NRnMgAr, NTh, OB, ORnFAr
-    Mg => BF, TiMg
-    N => CRnFAr, HSi
-    O => CRnFYFAr, CRnMgAr, HP, NRnFAr, OTi
-    P => CaP, PTi, SiRnFAr
-    Si => CaSi
-    Th => ThCa
-    Ti => BP, TiTi
-    e => HF, NAl, OMg
-    C: ... CRn ... Ar
-    Rn: ... Rn .. Ar
-    Ar: ... Rn .. Ar
-    Y: ... Rn ... Y ... Ar
---]]
