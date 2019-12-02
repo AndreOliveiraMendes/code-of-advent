@@ -1,4 +1,3 @@
-pos = 0
 t = {}
 input = {}
 for n in string.gmatch(io.read(), "%d+") do
@@ -19,6 +18,7 @@ function read(t, pos)
     return true
 end
 function output(non, verb, t)
+    local pos = 0
     t[2] = non
     t[3] = verb
     while pos < #t do
@@ -38,15 +38,15 @@ end
 --part I
 print(output(12, 2, t))
 reset(t, input)
-for i = 1, 98 do
-    for j = 1, 98 do
-        if output(i, j, t) then
+for i = 0, 99 do
+    for j = 0, 99 do
+        if output(i, j, t) == 19690720 then
             non, verb = i, j
-            goto end
+            goto endloop
         end
         reset(t, input)
     end
 end
-::end::
+::endloop::
 --part II
 print(100*non + verb)
