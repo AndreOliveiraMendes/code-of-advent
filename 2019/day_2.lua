@@ -1,12 +1,15 @@
 pos = 0
 t = {}
+input = {}
 for n in string.gmatch(io.read(), "%d+") do
-    table.insert(t, tonumber(n))
+    n = tonumber(n)
+    table.insert(t, n)
+    table.insert(input, n)
 end
 function read(t, pos)
     local opcode = t[pos]
     if opcode == 99 then return false end
-    local i1, i2, i3 = t[pos + 1] + 1, t[pos + 2] + 1
+    local i1, i2 = t[pos + 1] + 1, t[pos + 2] + 1
     local v1, v2 = t[i1], t[i2]
     if opcode == 1 or opcode == 2 then
         local i3 = t[pos + 3] + 1
@@ -15,14 +18,35 @@ function read(t, pos)
     end
     return true
 end
-t[2] = 12
-t[3] = 2
-while pos < #t do
-    if read(t, pos + 1) then
-        pos = pos + 4
-    else
-        break
+function output(non, verb, t)
+    t[2] = non
+    t[3] = verb
+    while pos < #t do
+        if read(t, pos + 1) then
+            pos = pos + 4
+        else
+            break
+        end
+    end
+    return t[1]
+end
+function reset(t1, t2)
+    for i, v in pairs(t2) do
+        t1[i] = v
     end
 end
 --part I
-print(t[1])
+print(output(12, 2, t))
+reset(t, input)
+for i = 1, 98 do
+    for j = 1, 98 do
+        if output(i, j, t) then
+            non, verb = i, j
+            goto end
+        end
+        reset(t, input)
+    end
+end
+::end::
+--part II
+print(100*non + verb)
