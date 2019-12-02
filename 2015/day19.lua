@@ -14,17 +14,17 @@ function tinsertr(t, value)
 end
 elemental_replace = {}
 elements = {}
-for lines in io.lines() do
-    if line.matches("=>") then
+for line in io.lines() do
+    if line:match("=>") then
         local t = {}
-        for n in line.gmatch("%a+") do
-            table.insert(t, tonumber(n))
+        for n in line:gmatch("%a+") do
+            table.insert(t, n)
         end
         local e1, e2 = t[1], t[2]
         tinsertr(elements, e1)
         tinsertr(elements, e2)
         table.insert(elemental_replace, {e1, e2})
-    elseif line.matches("%a") then
+    elseif line:match("%a") then
         input_element = line
     end
 end
