@@ -1,25 +1,16 @@
-input = [[Sprinkles: capacity 2, durability 0, flavor -2, texture 0, calories 3
-Butterscotch: capacity 0, durability 5, flavor -3, texture 0, calories 3
-Chocolate: capacity 0, durability 0, flavor 5, texture -1, calories 8
-Candy: capacity 0, durability -1, flavor 0, texture 5, calories 8]]
 ing = {}
-temp = {}
-for line in string.gmatch(input, "%C+") do
-	table.insert(temp, line)
-end
-for i, s in pairs(temp) do
-	local temp2 = {}
+for line in io.lines() do
+	local temp = {}
 	for word in string.gmatch(s, "-?%w+") do
-		table.insert(temp2, word)
+		table.insert(temp, word)
 	end
 	local t = {}
-	t.name = temp2[1]
+	t.name = temp[1]
 	for j = 1, 5 do
-		t[temp2[2*j]] = tonumber(temp2[2*j + 1])
+		t[temp[2*j]] = tonumber(temp[2*j + 1])
 	end
 	table.insert(ing, t)
 end
-temp = nil
 function pairsref(n, l)
 	local arg = {}
 	for i = 1, n do
@@ -28,7 +19,7 @@ function pairsref(n, l)
 	local i = 0
 	local	function getsum(t)
 				local sum = 0
-				for i, s in pairs(t) do
+				for _, s in pairs(t) do
 					sum = sum + s
 				end
 				return sum
@@ -51,8 +42,7 @@ function pairsref(n, l)
 				return table.unpack(arg)
 			end
 end
-ti = os.clock()
-for i1, i2, i3, i4 in pairsref(4,100) do
+for i1, i2, i3, i4 in pairsref(4, 100) do
 	local score
 	local capacity = i1*ing[1].capacity + i2*ing[2].capacity + i3*ing[3].capacity + i4*ing[4].capacity
 	local durability = i1*ing[1].durability + i2*ing[2].durability + i3*ing[3].durability + i4*ing[4].durability
@@ -65,11 +55,7 @@ for i1, i2, i3, i4 in pairsref(4,100) do
 		score = capacity*durability*flavor*texture
 	end
 	if not max1 or score > max1 then max1 = score end
-	if calories == 500 then
-		if not max2 or score > max2 then max2 = score end
-	end
+	if calories == 500 and not max2 or score > max2 then max2 = score end
 end
-to = os.clock()
-print("finished in " .. to - ti .. "s") -- ~= 75s
 print("max score possible is " .. max1)
 print("the max score possible maintening 500 calories is " .. max2)
