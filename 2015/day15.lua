@@ -13,39 +13,38 @@ for line in io.lines() do
 end
 function pairsref(n, l)
 	local arg = {}
-	for i = 1, n do
-		arg[i] = 0
-	end
-	local	function getsum(t)
-				local sum = 0
-				for _, s in pairs(t) do
-					sum = sum + s
-				end
-				return sum
-			end
 	return	function ()
-				repeat
-					for j = #arg, 1, -1 do
-						if arg[j] + 1 <= l then
-							arg[j] = arg[j] + 1
-							break
-						elseif j > 1 then
-							arg[j] = 0
-						else
-							return nil
-						end
+				if #arg == 0 then
+					for i = 1, n do
+						arg[i] = (i == n) and l or 0
 					end
-				until (getsum(arg) == l)
-				return table.unpack(arg)
+				elseif arg[n] > 0 then
+					arg[n], arg[n - 1] = arg[n] - 1, arg[n - 1] + 1
+				else
+					local i = n
+					while arg[i] == 0 do
+						i = i - 1
+					end
+					if i == 1 then return nil end
+					arg[i - 1], arg[i], arg[n] = arg[i - 1] + 1, 0, arg[n] + arg[i] - 1
+				end
+				return arg
 			end
 end
-for i1, i2, i3, i4 in pairsref(4, 100) do
+function get_property_sum(arg, ing, property)
+	local sum = 0
+	for i, q in pairs(arg) do
+		sum = sum + q*ing[i][property]
+	end
+	return sum
+end
+for arg in pairsref(4, 100) do
 	local score
-	local capacity = i1*ing[1].capacity + i2*ing[2].capacity + i3*ing[3].capacity + i4*ing[4].capacity
-	local durability = i1*ing[1].durability + i2*ing[2].durability + i3*ing[3].durability + i4*ing[4].durability
-	local flavor = i1*ing[1].flavor + i2*ing[2].flavor + i3*ing[3].flavor + i4*ing[4].flavor
-	local texture = i1*ing[1].texture + i2*ing[2].texture + i3*ing[3].texture + i4*ing[4].texture
-	local calories = i1*ing[1].calories + i2*ing[2].calories + i3*ing[3].calories + i4*ing[4].calories
+	local capacity = get_property_sum(arg, ing, "capacity")
+	local durability = get_property_sum(arg, ing, "durability")
+	local flavor = get_property_sum(arg, ing, "flavor")
+	local texture = get_property_sum(arg, ing, "texture")
+	local calories = get_property_sum(arg, ing, "calories")
 	if capacity <= 0 or durability <= 0 or flavor <= 0 or texture <= 0 then
 		score = 0
 	else
