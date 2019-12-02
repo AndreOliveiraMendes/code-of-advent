@@ -1,6 +1,6 @@
 input = io.read()
 t = {}
-for i in #input do
+for i = 1, #input do
     table.insert(t, tonumber(input:sub(i, i)))
 end
 for i = 1, 50 do
