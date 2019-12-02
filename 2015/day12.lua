@@ -7,32 +7,31 @@ for n in string.gmatch(input, "-?%d+") do
 end
 --part I
 print("the sum is " .. sum)
-str = string.gsub(input, '"%w":', function (w) return string.sub(w, 2, 2) .. " = " end)
-str = string.gsub(str, "{", '{type = "object", ')
-str = string.gsub(str, "%[", "{")
-str = string.gsub(str, "]", "}")
---print(str) <-- this is a valid lua string for the input, use that and you skip all that process
+str = input:gsub('"%w+":', function (w) return string.sub(w, 2, #w - 2) .. " = " end)
+str = str:gsub("{", '{type = "object", ')
+str = str:gsub("%[", "{")
+str = str:gsub("]", "}")
 function analysy(str)
-    if (string.sub(str, 1, 1) == "{") or (string.sub(str, 2, 2) == "{") then
+    if (str:sub(1, 1) == "{") or (str:sub(2, 2) == "{") then
         return nil, getdata(str)
-    elseif string.match(str, "=") then
+    elseif str:match("=") then
         local i = 1
-        while string.sub(str, i, i) ~= "=" do
+        while str:sub(i, i) ~= "=" do
             i = i + 1
         end
-        local astr, bstr = string.sub(str, 1, i - 1), string.sub(str, i + 1, #str)
-        astr = string.gsub(astr, " ", "")
-        if (string.sub(bstr, 1, 1) == "{") or (string.sub(bstr, 2, 2) == "{") then
+        local astr, bstr = str:sub(1, i - 1), str:sub(i + 1)
+        astr = astr:gsub(" ", "")
+        if (bstr:sub(1, 1) == "{") or (bstr:sub(2, 2) == "{") then
             return astr, getdata(str)
         else
-            bstr = string.gsub(bstr, " ", "")
-            bstr = string.gsub(bstr, '"', "")
+            bstr = bstr:gsub(" ", "")
+            bstr = bstr:gsub('"', "")
             if tonumber(bstr) then bstr = tonumber(bstr) end
             return astr, bstr
         end
     else
-        local bstr = string.gsub(str, " ", "")
-        bstr = string.gsub(bstr, '"', "")
+        local bstr = bstr:gsub(" ", "")
+        bstr = bstr:gsub('"', "")
         if tonumber(bstr) then bstr = tonumber(bstr) end
         return nil, bstr
     end
@@ -47,7 +46,7 @@ function getdata(str)
             i1 = i
             virg = false
         end
-        local astr = string.sub(str, i, i)
+        local astr = str:sub(i, i)
         if astr == "{" then
             if levelr == 0 then
                 i1 = i + 1
@@ -63,7 +62,7 @@ function getdata(str)
             virg = true
         end
         if i1 and i2 then
-            local index, value = analysy(string.sub(str, i1, i2))
+            local index, value = analysy(str:sub(i1, i2))
             if index then
                 t[index] = value
             else
