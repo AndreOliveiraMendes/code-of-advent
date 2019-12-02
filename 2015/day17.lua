@@ -1,5 +1,7 @@
-input = {43,3,4,10,21,44,4,6,47,41,34,17,17,44,36,31,46,9,27,38} --150
---input = {20, 15, 10, 5, 5} 25
+input = {}
+for line in io.lines() do
+   table.insert(input, tonumber(line))
+end
 function getsum(t)
    local sum = 0
    for i, s in pairs(t) do
