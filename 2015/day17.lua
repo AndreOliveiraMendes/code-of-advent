@@ -1,6 +1,5 @@
 input = {}
 for line in io.lines() do
-    
     table.insert(input, tonumber(line))
 end
 function getsum(t)
