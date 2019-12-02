@@ -1,7 +1,7 @@
 ing = {}
 for line in io.lines() do
 	local temp = {}
-	for word in string.gmatch(s, "-?%w+") do
+	for word in string.gmatch(line, "-?%w+") do
 		table.insert(temp, word)
 	end
 	local t = {}
@@ -52,7 +52,9 @@ for i1, i2, i3, i4 in pairsref(4, 100) do
 		score = capacity*durability*flavor*texture
 	end
 	if not max1 or score > max1 then max1 = score end
-	if calories == 500 and not max2 or score > max2 then max2 = score end
+	if calories == 500 then
+		if not max2 or score > max2 then max2 = score end
+	end
 end
 print("max score possible is " .. max1)
 print("the max score possible maintening 500 calories is " .. max2)
