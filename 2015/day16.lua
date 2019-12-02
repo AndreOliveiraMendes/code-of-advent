@@ -17,7 +17,6 @@ for w in string.gmatch(refinput, "%w+") do
         lstr = w
         i = 2
     else
-        ref[lstr]
         ref[lstr] = tonumber(w)
         lstr = nil
         i = 1
@@ -40,10 +39,10 @@ end
 for i, s in pairs(comp) do
     local count = 0
     local mcount = 0
-    for i, s in pairs(s) do
-        if i ~= "name" and i ~= "ind" then
+    for n, v in pairs(s) do
+        if n ~= "name" and n ~= "ind" then
             count = count + 1
-            if ref[i] == s then mcount = mcount + 1 end
+            if ref[n] == v then mcount = mcount + 1 end
         end
     end
     if mcount == count then index = s.ind end
@@ -52,15 +51,15 @@ print("the sue that sent the gift was " .. index)
 for i, s in pairs(comp) do
     local count = 0
     local mcount = 0
-    for i, s in pairs(s) do
-        if i ~= "name" and i ~= "ind" then
+    for n, v in pairs(s) do
+        if n ~= "name" and n ~= "ind" then
             count = count + 1
-            if i == "cats" or i == "trees" then
-                if s > ref[i] then mcount = mcount + 1 end
-            elseif i == "pomeranians" or i == "goldfish" then
-                if s < ref[i] then mcount = mcount + 1 end
+            if n == "cats" or n == "trees" then
+                if v > ref[n] then mcount = mcount + 1 end
+            elseif n == "pomeranians" or n == "goldfish" then
+                if v < ref[n] then mcount = mcount + 1 end
             else
-                if s == ref[i] then mcount = mcount + 1 end
+                if v == ref[n] then mcount = mcount + 1 end
             end
         end
     end
