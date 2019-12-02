@@ -21,16 +21,6 @@ for y = 1, #ml2 do
         end
     end
 end
-function pml(ml, t) --Print Matrix Light
-    if t then
-        print("<-----(" .. t .. ")----->")
-    else
-        print("[-----()-----]")
-    end
-    for y, s in ipairs(ml) do
-        print(table.concat(s, "|"))
-    end
-end
 function gloml(ml) --get light on matrix light
     local count = 0
     for y = 1, #ml do
@@ -40,14 +30,14 @@ function gloml(ml) --get light on matrix light
     end
     return count
 end
-function f(x, y, ml)
+function f(x, y, ml) --get the light level of a cell
     if ml[y] and ml[y][x] then
         return ml[y][x]
     else
         return 0
     end
 end
-function g(x, y, ml)
+function g(x, y, ml) --check if a cell exist
     if ml[y] and ml[y][x] then
         return 1
     else
