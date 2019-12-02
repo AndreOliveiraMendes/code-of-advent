@@ -43,26 +43,3 @@ end
 --part I
 replace(distincts_mol, input_element)
 print("there are " .. #distincts_mol .. " distincts molecules possible")
-for element in string.gmatch(input_element, "%u%l?") do
-    tinsertr(elements, element)
-end
-print("<===========================================================>")
-print("there are " .. #elements .. " elements in this puzzle")
-a = nil
-print("<===========================================================>")
-elements_count = {}
-for i, s in pairs(elements) do
-    local count = 0
-    for k in string.gmatch(input_element, s) do
-        count = count + 1
-    end
-    elements_count[s] = count
-end
-elements_count["C"] = elements_count["C"] - elements_count["Ca"]
-count = 0
-for i, s in pairs(elements_count) do
-    count = count + s
-    print(i, s)
-end
-print("total", count)
-print("estimative:" .. count - elements_count["Rn"] - elements_count["Ar"] - 2*elements_count["Y"] - 1)
