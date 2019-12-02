@@ -16,7 +16,6 @@ function pairsref(n, l)
 	for i = 1, n do
 		arg[i] = 0
 	end
-	local i = 0
 	local	function getsum(t)
 				local sum = 0
 				for _, s in pairs(t) do
@@ -25,20 +24,18 @@ function pairsref(n, l)
 				return sum
 			end
 	return	function ()
-				if i == 0 then
-					repeat
-						for j = #arg, 1, -1 do
-							if arg[j] + 1 <= l then
-								arg[j] = arg[j] + 1
-								break
-							elseif j > 1 then
-								arg[j] = 0
-							else
-								return nil
-							end
+				repeat
+					for j = #arg, 1, -1 do
+						if arg[j] + 1 <= l then
+							arg[j] = arg[j] + 1
+							break
+						elseif j > 1 then
+							arg[j] = 0
+						else
+							return nil
 						end
-					until (getsum(arg) == l)
-				end
+					end
+				until (getsum(arg) == l)
 				return table.unpack(arg)
 			end
 end
