@@ -6,7 +6,7 @@ function man_dist(x1, y1, x2, y2)
     end
 end
 function deploy_wire(map, input)
-    local x, y = 0, 0
+    local x, y, step = 0, 0, 0
     map = map or {}
     map[0] = map[0] or {}
     map[0][0] = true
@@ -14,9 +14,9 @@ function deploy_wire(map, input)
         local dir, n = w:sub(1, 1), tonumber(w:sub(2))
         local dx, dy = (dir == "R") and 1 or (dir == "L") and -1 or 0, (dir == "U") and 1 or (dir == "D") and -1 or 0
         for i = 1, n do
-            x, y = x + dx, y + dy
+            x, y, step = x + dx, y + dy, step + 1
             map[x] = map[x] or {}
-            map[x][y] = true
+            map[x][y] = map[x][y] or step
         end
     end
 end
@@ -33,6 +33,19 @@ function get_connection_min_dist(map1, map2)
     end
     return min_dist
 end
+function get_connection_min_step(map1, map2)
+    local min_step
+    for x in pairs(map1) do
+        for y in pairs(map1[x]) do
+            if x~=0 or y~= 0 then
+                if map2[x] and map2[x][y] then
+                    min_step = not min_step and (map1[x][y] + map2[x][y]) or math.min(map1[x][y] + map2[x][y], min_step)
+                end
+            end
+        end
+    end
+    return min_step
+end
 map1, map2 = {}, {}
 segond = false
 for line in io.lines() do
@@ -47,4 +60,9 @@ end
 min_dist = get_connection_min_dist(map1, map2)
 if min_dist then
     print("minimal distance is " .. min_dist)
+end
+--part II
+min_step = get_connection_min_step(map1, map2)
+if min_step then
+    print("minimal step sum is " .. min_step)
 end
