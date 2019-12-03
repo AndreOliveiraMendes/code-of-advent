@@ -29,7 +29,7 @@ for line in io.lines() do
     end
 end
 distincts_mol = {}
-function replace(distincts_mol, input_element)
+function replace(distincts_mol, input_element, elemental_replace)
     for i, s in pairs(elemental_replace) do
         local s_in, s_out = s[1], s[2]
         local i, o = input_element:find(s_in)
@@ -41,5 +41,5 @@ function replace(distincts_mol, input_element)
     end
 end
 --part I
-replace(distincts_mol, input_element)
+replace(distincts_mol, input_element, elemental replace)
 print("there are " .. #distincts_mol .. " distincts molecules possible")
