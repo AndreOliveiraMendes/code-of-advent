@@ -61,14 +61,21 @@ function find(input_element, output_element, elemental_replace, memory)
                 out = memory[mol]
             else
                 out = find(mol, output_element, elemental_replace, memory)
+                memory[mol] = out
             end
+            out = (out > 0) and (out + 1) or 0
             --print(mol, out)
-            if out and (not step or out + 1 < step) then
-                step = out + 1
+            if (out > 0) and (not step or out < step) then
+                step = out
             end
             i, o = input_element:find(s_in, i + 1)
         end
     end
-    return step
+    if step then
+        return step
+    else
+        if memory then memory[input_element] = 0 end
+        return 0
+    end
 end
 print("min number of steps is " .. find(input_element, "e", inv_elemental_replace, memory))
