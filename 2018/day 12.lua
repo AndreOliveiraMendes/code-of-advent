@@ -1,4 +1,13 @@
-initial = "##.#.#.##..#....######..#..#...#.#..#.#.#..###.#.#.#..#..###.##.#..#.##.##.#.####..##...##..#..##.#."
+transform = {}
+for line in io.lines() do
+    if line:match("initial state: ") then
+        initial = line:sub(#"initial state: " + 1)
+    elseif #line > 0 then
+        local i, j = line:find(" => ")
+	    local a, b = line:sub(1, i - 1), line:sub(j + 1)
+	    transform[a] = b
+    end
+end
 sm = {}
 for i = 1, #initial do
 	if initial:sub(i, i) == "." then
@@ -9,44 +18,6 @@ for i = 1, #initial do
 end
 sm.x1 = 0
 sm.x2 = #initial - 1
-tstring = [[...## => #
-#.#.# => #
-.###. => #
-#.#.. => .
-.#..# => #
-#..#. => #
-..##. => .
-....# => .
-#.... => .
-###.. => #
-.#### => #
-###.# => .
-#..## => #
-..... => .
-##.## => #
-####. => .
-##.#. => .
-#...# => .
-##### => .
-..#.. => .
-.#.#. => .
-#.### => .
-.##.# => .
-..#.# => .
-.#.## => #
-...#. => .
-##... => #
-##..# => #
-.##.. => .
-.#... => #
-#.##. => #
-..### => .]]
-transform = {}
-for word in tstring:gmatch("%C+") do
-	local i, j = word:find(" => ")
-	local a, b = word:sub(1, i - 1), word:sub(j + 1)
-	transform[a] = b
-end
 function conv(...)
 	local arg = {...}
 	local str = ""
