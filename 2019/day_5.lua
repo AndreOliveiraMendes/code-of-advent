@@ -37,11 +37,11 @@ function read(t, pos, inp, out)
         return true, 2
     end
 end
-function output(t)
+function output(t, input)
     local pos = 0
     local out = {}
     while pos < #t do
-        local succed, dpos = read(t, pos + 1, 1, out)
+        local succed, dpos = read(t, pos + 1, input, out)
         if succed then
             pos = pos + dpos
         else
@@ -50,9 +50,12 @@ function output(t)
     end
     return out
 end
---part I
-out = output(t)
-print("there " .. #out .. " messages ")
-for _, msg in pairs(out) do
-    print(msg)
+function reset(t1, t2)
+    for i, v in pairs(t2) do
+        t1[i] = v
+    end
 end
+--part I
+out = output(t, 1)
+print(out[#out])
+reset(t, input)
