@@ -55,7 +55,7 @@ function read(t, pos, inp, out)
             return true, 3
         end
     elseif opcode == 7 or opcode == 8 then
-        local v1, v2, v3
+        local v1, v2, p3
         v1 = get_value(t, op, pos, 1)
         v2 = get_value(t, op, pos, 2)
         p3 = get_param(t, pos, 3)
@@ -95,4 +95,3 @@ print("part I answer:" .. out[#out])
 reset(t, input)
 out = output(t, 5)
 print("part II answer:" .. out[#out])
-print(out[#out])
