@@ -23,43 +23,20 @@ shop = {
     }
 }
 inventory = {Weapons = {}, Armor = {}, Rings = {}}
-boss = {HP = 104, atk = 8, def = 1}
+boss = {}
+for line in io.lines() do
+	local n = tonumber(line:sub(line:find("%d+")))
+	if line:match("Hit Points") then
+		boss.HP = n
+	elseif line:match("Damage") then
+		boss.atk = n
+	elseif line:match("Armor") then
+		boss.def = n
+	end
+end
 player = {HP = 100, atk = 0, def = 0}
 function damage(atk, def)
 	return math.max(atk - def, 1)
-end
-function restart_stats()
-    boss = {HP = 104, atk = 8, def = 1}
-    player = {HP = 100, atk = 0, def = 0}
-end
-function game()
-    --stat from items
-    for i, s in pairs(inventory.Weapons) do
-        player.atk, player.def = player.atk + s.atk, player.def + s.def
-    end
-    for i, s in pairs(inventory.Armor) do
-        player.atk, player.def = player.atk + s.atk, player.def + s.def
-    end
-    for i, s in pairs(inventory.Rings) do
-        player.atk, player.def = player.atk + s.atk, player.def + s.def
-    end
-    local turn = 0
-	while player.HP > 0 and boss.HP > 0 do
-		--player turn
-		turn = turn + 1
-		boss.HP = boss.HP - damage(player.atk, boss.def)
-		if boss.HP <= 0 then break end
-		--boss turn
-		turn = turn + 1
-		player.HP = player.HP - damage(boss.atk, player.def)
-		if player.HP <= 0 then break end
-	end
-	if boss.HP <= 0 then
-		print("the player win")
-	elseif player.HP <= 0 then
-		print("the player lose")
-	end
-	print("the game taked " .. turn .. " to end")
 end
 --estimate the winner
 function simulation(p1, p2)
@@ -71,94 +48,58 @@ function simulation(p1, p2)
         return false
     end
 end
+--estimate cost
+function estimate(p1, p2, cost)
+	if simulation(p1, p2) then
+		if not min or cost < min then
+			min = cost
+		end
+	else
+		if not max or cost > max then
+			max = cost
+		end
+	end
+end
 --buying items and simulating
-for i, s in pairs(shop.Weapons) do
+for _, w in pairs(shop.Weapons) do
     local cost = 0
     local p1 = {HP = player.HP, atk = player.atk, def = player.def}
     local p2 = {HP = boss.HP, atk = boss.atk, def = boss.def}
-    p1.atk, p1.def, cost = s.atk, s.def, cost + s.cost
-    if simulation(p1, p2) then
-        if not min or cost < min then
-            min = cost
-        end
-    else
-        if not max or cost > max then
-            max = cost
-        end
-    end
-    --0 rings, 1 shield
-    for i, s in pairs(shop.Armor) do
-        p1.atk, p1.def, cost = p1.atk + s.atk, p1.def + s.def, cost + s.cost
-        if simulation(p1, p2) then
-            if not min or cost < min then
-                min = cost
-            end
-        else
-            if not max or cost > max then
-                max = cost
-            end
-        end
-        p1.atk, p1.def, cost = p1.atk - s.atk, p1.def - s.def, cost - s.cost
-    end
-    --1/2 rings
-    for i, s in pairs(shop.Rings) do
-        --1 ring
-        p1.atk, p1.def, cost = p1.atk + s.atk, p1.def + s.def, cost + s.cost
-        if simulation(p1, p2) then
-            if not min or cost < min then
-                min = cost
-            end
-        else
-            if not max or cost > max then
-                max = cost
-            end
-        end
-        --1 ring, shield
-        for i, s in pairs(shop.Armor) do
-            p1.atk, p1.def, cost = p1.atk + s.atk, p1.def + s.def, cost + s.cost
-            if simulation(p1, p2) then
-                if not min or cost < min then
-                    min = cost
-                end
-            else
-                if not max or cost > max then
-                    max = cost
-                end
-            end
-            p1.atk, p1.def, cost = p1.atk - s.atk, p1.def - s.def, cost - s.cost
-        end
-        --2 ring
-        for j, s in pairs(shop.Rings) do
-            if i < j then
-                p1.atk, p1.def, cost = p1.atk + s.atk, p1.def + s.def, cost + s.cost
-                if simulation(p1, p2) then
-                    if not min or cost < min then
-                        min = cost
-                    end
-                else
-                    if not max or cost > max then
-                        max = cost
-                    end
-                end
-		--2 ring, shield
-                for i, s in pairs(shop.Armor) do
-                    p1.atk, p1.def, cost = p1.atk + s.atk, p1.def + s.def, cost + s.cost
-                    if simulation(p1, p2) then
-                        if not min or cost < min then
-                            min = cost
-                        end
-                    else
-                        if not max or cost > max then
-                            max = cost
-                        end
-                    end
-                    p1.atk, p1.def, cost = p1.atk - s.atk, p1.def - s.def, cost - s.cost
-                end
-                p1.atk, p1.def, cost = p1.atk - s.atk, p1.def - s.def, cost - s.cost
-            end
-        end
-        p1.atk, p1.def, cost = p1.atk - s.atk, p1.def - s.def, cost - s.cost
-    end
+	--only sword
+	p1.atk, p1.def, cost = p1.atk + w.atk, p1.def + w.def, w.cost
+	estimate(p1, p2, cost)
+	--buy only shield route
+	for _, s in pairs(shop.Armor) do
+		p1.atk, p1.def, cost = p1.atk + s.atk, p1.def + s.def, cost + s.cost
+		estimate(p1, p2, cost)
+		p1.atk, p1.def, cost = p1.atk - s.atk, p1.def - s.def, cost - s.cost
+	end
+	--buy rings route
+	for i, r1 in pairs(shop.Rings) do
+		p1.atk, p1.def, cost = p1.atk + r1.atk, p1.def + r1.def, cost + r1.cost
+		estimate(p1, p2, cost) -- using only one ring route
+		--buy a shield subrout of ring route
+		for _, s in pairs(shop.Armor) do
+			p1.atk, p1.def, cost = p1.atk + s.atk, p1.def + s.def, cost + s.cost
+			estimate(p1, p2, cost)
+			p1.atk, p1.def, cost = p1.atk - s.atk, p1.def - s.def, cost - s.cost
+		end
+		--buy the 2nd ring route
+		for j, r2 in pairs(shop.Rings) do
+			if i < j then --guarante they diferent rings
+				p1.atk, p1.def, cost = p1.atk + r2.atk, p1.def + r2.def, cost + r2.cost
+				estimate(p1, p2, cost) -- using only two ring route
+				--complet route
+				for _, s in pairs(shop.Armor) do
+					p1.atk, p1.def, cost = p1.atk + s.atk, p1.def + s.def, cost + s.cost
+					estimate(p1, p2, cost)
+					p1.atk, p1.def, cost = p1.atk - s.atk, p1.def - s.def, cost - s.cost
+				end
+				p1.atk, p1.def, cost = p1.atk - r2.atk, p1.def - r2.def, cost - r2.cost
+			end
+		end
+		p1.atk, p1.def, cost = p1.atk - r1.atk, p1.def - r1.def, cost - r1.cost
+	end
 end
 print("the minimal cost and still win is " .. tostring(min))
 print("the max cost and still lose is " .. tostring(max))
