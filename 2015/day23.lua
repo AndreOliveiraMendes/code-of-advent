@@ -28,53 +28,47 @@ function jio(v1, v2, i, varlist)
         return i + 1
     end
 end
-input = {{jio,"a", 18},
-{inc, "a"},
-{tpl, "a"},
-{inc, "a"},
-{tpl, "a"},
-{tpl, "a"},
-{tpl, "a"},
-{inc, "a"},
-{tpl, "a"},
-{inc, "a"},
-{tpl, "a"},
-{inc, "a"},
-{inc, "a"},
-{tpl, "a"},
-{tpl, "a"},
-{tpl, "a"},
-{inc, "a"},
-{jmp, 22},
-{tpl, "a"},
-{inc, "a"},
-{tpl, "a"},
-{inc, "a"},
-{inc, "a"},
-{tpl, "a"},
-{inc, "a"},
-{tpl, "a"},
-{inc, "a"},
-{inc, "a"},
-{tpl, "a"},
-{tpl, "a"},
-{inc, "a"},
-{inc, "a"},
-{tpl, "a"},
-{inc, "a"},
-{inc, "a"},
-{tpl, "a"},
-{inc, "a"},
-{inc, "a"},
-{tpl, "a"},
-{jio, "a", 8},
-{inc, "b"},
-{jie, "a", 4},
-{tpl, "a"},
-{inc, "a"},
-{jmp, 2},
-{hlf, "a"},
-{jmp, -7}}
+input = {}
+for line in io.lines() do
+	local t = {}
+	if line:match("hlf") then
+		local r = line:sub(line:find(" ") + 1)
+		table.insert(t, hlf)
+		table.insert(t, r)
+	elseif line:match("tpl") then
+		local r = line:sub(line:find(" ") + 1)
+		table.insert(t, tpl)
+		table.insert(t, r)
+	elseif line:match("inc") then
+		local r = line:sub(line:find(" ") + 1)
+		table.insert(t, inc)
+		table.insert(t, r)
+	elseif line:match("jmp") then
+		local r = line:sub(line:find(" ") + 1)
+		r = tonumber(r) or r
+		table.insert(t, jmp)
+		table.insert(t, r)
+	elseif line:match("jie") then
+		local p1 = line:sub(line:find(" ") + 1, line:find(",") - 1)
+		local p2 = line:sub(line:find(",") + 1)
+		p1 = tonumber(p1) or p1
+		p2 = tonumber(p2) or p2
+		table.insert(t, jie)
+		table.insert(t, p1)
+		table.insert(t, p2)
+	elseif line:match("jio") then
+		local p1 = line:sub(line:find(" ") + 1, line:find(",") - 1)
+		local p2 = line:sub(line:find(",") + 1)
+		p1 = tonumber(p1) or p1
+		p2 = tonumber(p2) or p2
+		table.insert(t, jio)
+		table.insert(t, p1)
+		table.insert(t, p2)
+	else
+		print("error")
+	end
+	table.insert(input, t)
+end
 function isfunc(f,...)
     local arg = {...}
     for i, s in pairs(arg) do
