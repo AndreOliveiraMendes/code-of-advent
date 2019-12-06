@@ -27,7 +27,7 @@ function get_min_path(map, origin, destine)
         return true, 0
     else
         if origin.visited then
-            return false, 0
+            return false
         else
             local min
             origin.visited = true
@@ -49,7 +49,7 @@ function get_min_path(map, origin, destine)
             if min then
                 return true, min
             else
-                return false, 0
+                return false
             end
         end
     end
